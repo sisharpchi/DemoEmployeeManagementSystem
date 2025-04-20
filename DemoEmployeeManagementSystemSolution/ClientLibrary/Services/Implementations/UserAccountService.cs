@@ -37,7 +37,6 @@ public class UserAccountService(GetHttpClient getHttpClient) : IUserAccountServi
     {
         var httpClient = await getHttpClient.GetPrivateHttpClinet();
         var result = await httpClient.GetFromJsonAsync<WeatherForecast[]>("api/weatherforecast");
-        if (result == null) throw new InvalidOperationException("Weather forecast data is null.");
-        return result;
+        return result!;
     }
 }
