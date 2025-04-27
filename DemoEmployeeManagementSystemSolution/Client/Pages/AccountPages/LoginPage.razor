@@ -1,24 +1,94 @@
-﻿@page "/identity/account/login"
+﻿@* @page "/identity/account/login" *@
+@* @layout AuthenticationLayout *@
+@* <div class="container"> *@
+@* 	<div class="row"> *@
+@* 		<div class="col-lg-5"></div> *@
+@* 		<div class="col-lg-2"> *@
+@* 			<EditForm Enhance Model="User" OnValidSubmit="HandleLogin"> *@
+@* 				<DataAnnotationsValidator /> *@
+@* 				<ValidationSummary />  *@
+@* 				<div class="card bg-dark" style="opacity: 0.5; margin:50%; border-radius:10px; color:white; font-weight:bold;">  *@
+@* 					<div class="card-header text-center fs-5 mb-2">Login</div>  *@
+@* 					<div class="container"> *@
+@* 						<div class="row"> *@
+@* 							<div class="row"> *@
+@* 								<div class="col-lg-4 col-md-4 col-sm-4"></div> *@
+@* 								<div class="col-lg-4 col-md-4 col-sm-4 d-flex justify-content-center"> *@
+@* 									<img style="border-radius:20px" src="images/companylogos/netcode.jpg" height="50" width="50" /> *@
+@* 								</div> *@
+@* 								<div class="col-lg-4 col-md-4 col-sm-4"></div> *@
+@* 							</div> *@
+@* 						</div> *@
+@* 					</div> *@
+@* 					<div class="card-body">  *@
+@* 						<div class="form-group mt-3">  *@
+@* 							<label class="form-label">Email</label>  *@
+@* 							<InputText @bind-Value="User.Email" class="form-control"></InputText>  *@
+@* 						</div>  *@
+@* 						<div class="form-group mt-3">  *@
+@* 							<label class="form-label">Password</label>  *@
+@* 							<input type="password" @bind="User.Password" class="form-control"></input>  *@
+@* 						</div>  *@
+@* 						<div class="form-group mt-3">  *@
+@* 							<button class="btn btn-outline-primary float-end" type="submit">Login</button>  *@
+@* 						</div> *@
+@* 					</div> *@
+@* 				</div> *@
+@* 			</EditForm> *@
+@* 		</div> *@
+@* 		<div class="col-lg-5"></div> *@
+@* 	</div> *@
+@* </div> *@
+
+@* @code{ *@
+@* 	Login User = new(); *@
+@* 	async Task HandleLogin() *@
+@* 	{ *@
+@* 		var result = await accountService.SignInAsync(User); *@
+@* 		if (result.Flag) *@
+@* 		{ *@
+@* 			var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider; *@
+@* 			await customAuthStateProvider.UpdateAuthenticationState(new UserSession() {Token = result.Token, RefreshToken = result.RefreshToken}); *@
+@* 			NavManager.NavigateTo("/", forceLoad: true); *@
+@* 		} *@
+@* 	} *@
+@* } *@
+
+
+@page "/identity/account/login"
+@layout AuthenticationLayout
 
 <div class="container">
-	<div class="row">
-		<div class="col-lg-6">
-			<EditForm Enhance Model="User" OnValidSubmit="HandleLogin">
+	<div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+		<div class="col-md-6 col-lg-4">
+			<EditForm Model="User" OnValidSubmit="HandleLogin">
 				<DataAnnotationsValidator />
-				<ValidationSummary /> 
-				<div class="card"> 
-					<div class="card-header">Fill this form to Login</div> 
-					<div class="card-body"> 
-						<div class="form-group mt-3"> 
-							<label class="form-label">Email</label> 
-							<InputText @bind-Value="User.Email" class="form-control"></InputText> 
-						</div> 
-						<div class="form-group mt-3"> 
-							<label class="form-label">Password</label> 
-							<input type="password" @bind="User.Password" class="form-control"></input> 
-						</div> 
-						<div class="form-group mt-3"> 
-							<button class="btn btn-outline-primary float-end" type="submit">Login</button> 
+				<ValidationSummary />
+
+				<div class="card shadow-lg bg-dark text-white" style="border-radius: 15px; opacity: 0.9;">
+					<div class="card-header text-center fs-4 fw-bold">
+						Login
+					</div>
+
+					<div class="card-body">
+						<div class="text-center mb-4">
+							<img src="images/companylogos/netcode.jpg" class="rounded-circle" style="height: 60px; width: 60px;" />
+						</div>
+
+						<div class="form-group mb-3">
+							<label>Email</label>
+							<InputText @bind-Value="User.Email" class="form-control" placeholder="Enter your email" />
+						</div>
+
+						<div class="form-group mb-4">
+							<label>Password</label>
+							<InputText @bind-Value="User.Password" type="password" class="form-control" placeholder="Enter your password" />
+						</div>
+
+						<div class="d-grid">
+							<button type="submit" class="btn btn-primary">
+								Login
+							</button>
 						</div>
 					</div>
 				</div>
@@ -27,7 +97,7 @@
 	</div>
 </div>
 
-@code{
+@code {
 	Login User = new();
 	async Task HandleLogin()
 	{
@@ -35,7 +105,7 @@
 		if (result.Flag)
 		{
 			var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
-			await customAuthStateProvider.UpdateAuthenticationState(new UserSession() {Token = result.Token, RefreshToken = result.RefreshToken});
+			await customAuthStateProvider.UpdateAuthenticationState(new UserSession(){ Token = result.Token, RefreshToken = result.RefreshToken });
 			NavManager.NavigateTo("/", forceLoad: true);
 		}
 	}
