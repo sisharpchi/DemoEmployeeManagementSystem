@@ -1,51 +1,95 @@
 ﻿@page "/identity/account/register"
-<div class="container">
-	<div class="row">
-		<div class="col-lg-6">
-			<EditForm Enhance Model="User" OnValidSubmit="HandleRegistration">
-				<DataAnnotationsValidator />
-				<ValidationSummary />
-				<div class="card">
-					<div class="card-header">Fill this from to Register</div>
-					<div class="card-body">
-						<div class="form-group">
-							<label class="form-label">Fullname</label>
-							<InputText @bind-Value="User.FullName" class="form-control"></InputText>
-						</div>
-						<div class="form-group mt-3">
-							<label class="form-label">Email</label>
-							<InputText @bind-Value="User.Email" class="form-control"></InputText>
-						</div>
-						<div class="form-group mt-3">
-							<label class="form-label">Password</label>
-							<InputText @bind-Value="User.Password" type="password" class="form-control"></InputText>
-						</div>
-						<div class="form-group mt-3">
-							<label class="form-label">Password</label>
-							<InputText @bind-Value="User.ConfirmPassword" type="password" class="form-control"></InputText>
-						</div>
-						<div class="form-group mt-3">
-							<button class="btn btn-outline-primary float-end" tpye="submit">Register</button>
-						</div>
-					</div>
-				</div>
-			</EditForm>
-		</div>
-	</div>
+@using Client.Pages.OtherPages
+@using Syncfusion.Blazor.Popups
+@inject SfDialogService DialogService
+@layout AuthenticationLayout
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <EditForm Model="User" OnValidSubmit="HandleRegistration">
+                <DataAnnotationsValidator />
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-header text-center fs-4 fw-semibold">
+                        Register an Account
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <InputText @bind-Value="User.FullName" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <InputText @bind-Value="User.Email" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <InputText @bind-Value="User.Password" type="password" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirm Password</label>
+                            <InputText @bind-Value="User.ConfirmPassword" type="password" class="form-control" />
+                        </div>
+                        <div class="d-grid">
+                            @if (ShowLoadingButton)
+                            {
+                                <ButtonLoadingSpinner></ButtonLoadingSpinner>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary" type="submit">Register</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <div>
+                            <small>Already have an account?</small><br />
+                            <a class="btn btn-link" href="/identity/account/login">Sign In</a>
+                        </div>
+                        <ValidationSummary />
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
 </div>
 
 @code {
-	Register User = new();
+    public bool ShowLoadingButton { get; set; } = false;
+    Register User = new();
 
-	async Task HandleRegistration() 
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+        await CheckUserAuthentication();
+    }
+
+    async Task HandleRegistration()
+    {
+        ShowLoadingButton = true;
+        var result = await accountService.CreateAsync(User);
+        if (result.Flag)
+        {
+			await DisplayDialog(result.Massage, "Success");
+            User = new();
+        }
+        else
+        {
+            await DisplayDialog(result.Massage, "Alter");
+        }
+        ShowLoadingButton = false;
+    }
+
+    private async Task DisplayDialog(string content, string title)
+    {
+        await DialogService.AlertAsync(content, title);
+    }
+
+    private async Task CheckUserAuthentication()
 	{
-		var  result = await accountService.CreateAsync(User);
-		if (result.Flag)
-		{
-			User = new();
-		}
-		else
-		{
-		}
+		var user = (await AuthenticationState).User;
+		bool isAuthenticated = user.Identity!.IsAuthenticated;
+		if (isAuthenticated)
+			NavManager.NavigateTo("/home/dashboard");
 	}
 }

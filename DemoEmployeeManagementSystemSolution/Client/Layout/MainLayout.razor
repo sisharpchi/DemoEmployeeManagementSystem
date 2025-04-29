@@ -1,5 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
+@* @inject NavigationManager NavManager *@
+@* @inject AuthenticationStateProvider AuthStateProvider *@
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -11,10 +14,6 @@
                 <Authorized>
                     <a class="btn btn-none text-danger" @onclick="LogoutClicked">Logout</a>
                 </Authorized>
-                <NotAuthorized>
-                    <a class="btn btn-none" href="identity/account/login">Login</a>
-                    <a class="btn btn-none" href="identity/account/register">Register</a>
-                </NotAuthorized>
             </AuthorizeView>
         </div>
 
@@ -23,13 +22,14 @@
         </article>
     </main>
 </div>
+<Syncfusion.Blazor.Popups.SfDialogProvider />
 
 @code {
     async Task LogoutClicked()
     {
         var logoutModel = new UserSession();
-		var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
-		await customAuthStateProvider.UpdateAuthenticationState(logoutModel);
-		NavManager.NavigateTo("/", forceLoad: true);
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(logoutModel);
+        NavManager.NavigateTo("/", forceLoad: true);
     }
 }
