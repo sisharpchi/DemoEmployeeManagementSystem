@@ -1,5 +1,7 @@
-﻿@inherits LayoutComponentBase
-
+﻿@using Client.Pages.OtherPages
+@using Microsoft.AspNetCore.Authorization
+@inherits LayoutComponentBase
+@attribute [Authorize]
 @inject NavigationManager NavManager
 @inject AuthenticationStateProvider AuthStateProvider
 
@@ -10,11 +12,7 @@
 
     <main>
         <div class="top-row px-4">
-            <AuthorizeView>
-                <Authorized>
-                    <a class="btn btn-none text-danger" @onclick="LogoutClicked">Logout</a>
-                </Authorized>
-            </AuthorizeView>
+            <ProfileDropDown></ProfileDropDown>
         </div>
 
         <article class="content px-4">

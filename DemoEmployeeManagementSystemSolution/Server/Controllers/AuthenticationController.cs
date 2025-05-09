@@ -34,3 +34,4 @@ public class AuthenticationController(IUserAccount accountInterface) : Controlle
         return Ok(result);
     }
 }
+

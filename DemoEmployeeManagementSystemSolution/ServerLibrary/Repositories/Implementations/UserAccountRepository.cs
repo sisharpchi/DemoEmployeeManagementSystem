@@ -116,14 +116,14 @@ public class UserAccountRepository(IOptions<JwtSection> config, AppDbContext app
 
     private async Task<ApplicationUser> FindUserByEmail(string email) =>
             await appDbContext.ApplicationUsers.FirstOrDefaultAsync(_ => _.Email!.ToLower()!.Equals(email!.ToLower()));
-
+    
     private async Task<T> AddToDatabase<T>(T model)
     {
-        var result = appDbContext.Add(model!);
+        var result = await appDbContext.AddAsync(model!);
         await appDbContext.SaveChangesAsync();
         return (T)result.Entity;
+        throw new Exception();
     }
-
     public async Task<LoginResponse> RefreshTokenAsync(RefreshToken token)
     {
         if (token is null) return new LoginResponse(false, "Model is empty");
