@@ -1,6 +1,6 @@
 ﻿@page "/home/dashboard"
-@using Client.Pages.AdministrationPages
 @layout MainLayout
+@using Client.Pages.AdministrationPages
 
 <TableBanner /> 
 @code {
@@ -13,11 +13,9 @@
 	private async Task CheckUserAuthentication()
 	{
 		var user = (await AuthenticationState).User;
-		bool isAuthenticated = user.Identity!.IsAuthenticated;
+		var isAuthenticated = user.Identity!.IsAuthenticated;
 		if (!isAuthenticated)
-		{
 			NavManager.NavigateTo("/identity/account/login");
-		}
-	}
+ 	}
 }
 

@@ -84,7 +84,7 @@ public class UserAccountRepository(IOptions<JwtSection> config, AppDbContext app
                 Token = refreshToken,
                 UserId = applicationUser.Id
             });
-        }
+        }   
         return new LoginResponse(true, "Login successful", jwtToken, refreshToken);
     }
 

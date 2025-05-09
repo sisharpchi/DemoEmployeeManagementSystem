@@ -25,6 +25,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\background\" />
     <Folder Include="wwwroot\images\companylogos\" />
+    <Folder Include="wwwroot\images\Profile\" />
   </ItemGroup>
 
 </Project>

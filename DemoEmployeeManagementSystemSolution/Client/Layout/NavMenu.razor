@@ -2,7 +2,7 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">
-            Hi
+            Hi,
             <AuthorizeView>
                 <Authorized>@context.User.Identity!.Name</Authorized>
                 <NotAuthorized>Guest</NotAuthorized>
@@ -14,7 +14,8 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+        @* @NavMenuCssClass *@
+<div class="nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">

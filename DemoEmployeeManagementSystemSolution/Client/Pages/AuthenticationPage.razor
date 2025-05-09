@@ -1,14 +1,32 @@
-﻿@page "/"
+﻿@* @page "/" *@
 
+@* @inject NavigationManager NavManager *@
+@* @code { *@
+@* 	[CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; } *@
+@* 	protected async override Task OnInitializedAsync() *@
+@* 	{ *@
+@* 		var user = (await AuthenticationState).User; *@
+@* 		if (user.Identity!.IsAuthenticated)  *@
+@* 			NavManager.NavigateTo("/home/dashboard"); *@
+@* 		else *@
+@* 			NavManager.NavigateTo("/identity/account/login"); *@
+@* 	} *@
+@* } *@
+@* 3:39 *@
+
+@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
+
 @code {
-	[CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
-	protected async override Task OnInitializedAsync()
-	{
-		var user = (await AuthenticationState).User;
-		if (user.Identity!.IsAuthenticated) 
-			NavManager.NavigateTo("/home/dashboard");
-		else
-			NavManager.NavigateTo("/identity/account/login");
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+            NavManager.NavigateTo("/home/dashboard");
+        else
+            NavManager.NavigateTo("/identity/account/login");
+    }
 }
