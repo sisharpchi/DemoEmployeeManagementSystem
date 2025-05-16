@@ -13,13 +13,7 @@ public class Employee
     public string? Photo { get; set; }
     public string? Other { get; set; }
 
-    // Relationships: many to one
-    public GeneralDepartment? GeneralDepartment { get; set; }
-    public int GeneralDepartmentId { get; set; }
-
-    public Department? Department { get; set; }
-    public int DepartmentId { get; set; }
-
+    // Many to one relationship Branch
     public Branch? Branch { get; set; }
     public int BranchId { get; set; }
 
