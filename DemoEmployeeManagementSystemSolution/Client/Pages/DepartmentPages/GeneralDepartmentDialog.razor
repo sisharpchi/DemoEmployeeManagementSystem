@@ -1,0 +1,44 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+@inject SfDialogService DialogService
+
+<SfDialog Width="250px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+	<DialogEvents OnOpen="OpenDialog"></DialogEvents>
+
+	<DialogTemplates>
+		<Header>Add Department</Header>
+		<Content>
+			<EditForm Model="Dapartment" Enhance OnSubmit="Save">
+				<div class="card border-success">
+					<div class="card-body">
+						<div class="form-group">
+							<label class="form-label">Name</label>
+							<InputText @bind-Value="Dapartment.Name" class="form-control"/>
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</Content>
+	</DialogTemplates>
+
+	<DialogButtons>
+		<DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save"/>
+	</DialogButtons>
+</SfDialog>
+
+@code {
+	[Parameter] public GeneralDepartmentDTO Dapartment { get; set; } = new();
+	private bool IsVisible { get; set; } = false;
+	public void OpenDialog()
+	{
+		IsVisible = true;
+		StateHasChanged();
+	}
+
+	async void Save()
+	{
+		if (string.IsNullOrEmpty(Dapartment.Name))
+			await DialogService.AlertAsync("You need to provide Department name.", "Alert!");
+	}
+}
+
