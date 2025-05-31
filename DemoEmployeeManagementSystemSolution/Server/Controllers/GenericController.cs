@@ -21,7 +21,7 @@ public class GenericController<T>(IGenericRepositoryInterface<T> genericReposito
     public async Task<IActionResult> GetById(int id)
     {
         if (id <= 0) return BadRequest("Invalid request sent");
-        return Ok(await genericRepositoryInterface.DeleteById(id));
+        return Ok(await genericRepositoryInterface.GetById(id));
     }
 
     [HttpPost("add")]
