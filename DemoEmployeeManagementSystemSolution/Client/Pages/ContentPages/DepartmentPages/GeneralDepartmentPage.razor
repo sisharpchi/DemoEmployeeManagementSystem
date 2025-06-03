@@ -1,9 +1,6 @@
-﻿@using BaseLibrary.Entities
-@using Client.ApplicationStates
-@implements IDisposable
-@inject DepartmentState dapartmentState
+﻿@implements IDisposable
 
-@if (dapartmentState.ShowGeneralDepartment)
+@if (allState.ShowGeneralDepartment)
 {
 	<div class="container mt-5">
 		<div class="row">

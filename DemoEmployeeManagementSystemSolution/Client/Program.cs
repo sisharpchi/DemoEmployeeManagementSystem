@@ -43,7 +43,7 @@ builder.Services.AddScoped<IGenericServiceInterface<Town>, GenericSeriveImpleman
 // Employee
 builder.Services.AddScoped<IGenericServiceInterface<Employee>, GenericSeriveImplemantation<Employee>>();
 
-builder.Services.AddScoped<DepartmentState>();
+builder.Services.AddScoped<AllState>();
 
 builder.Services.AddSyncfusionBlazor();
 builder.Services.AddScoped<SfDialogService>();
