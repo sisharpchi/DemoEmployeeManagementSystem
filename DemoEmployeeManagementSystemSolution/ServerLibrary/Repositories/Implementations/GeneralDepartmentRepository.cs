@@ -22,7 +22,8 @@ public class GeneralDepartmentRepository(AppDbContext appDbContext) : IGenericRe
 
     public async Task<GeneralRepsonse> Insert(GeneralDepartment item)
     {
-        if (!await CheckName(item.Name!)) return new GeneralRepsonse(false, "GeneralDepartment already added");
+        var checkIfNull = await CheckName(item.Name);
+        if (checkIfNull) return new GeneralRepsonse(false, "General Department already added");
         await appDbContext.GeneralDepartments.AddAsync(item);
         await Commit();
         return Success();
@@ -37,7 +38,7 @@ public class GeneralDepartmentRepository(AppDbContext appDbContext) : IGenericRe
         return Success();
     }
 
-    private static GeneralRepsonse NotFound() => new (false, "Sorry GeneralDepartment not found");
+    private static GeneralRepsonse NotFound() => new (false, "Sorry General Department not found");
     private static GeneralRepsonse Success() => new (true, "Process completed" );
     private async Task Commit() => await appDbContext.SaveChangesAsync();
     private async Task<bool> CheckName(string name)

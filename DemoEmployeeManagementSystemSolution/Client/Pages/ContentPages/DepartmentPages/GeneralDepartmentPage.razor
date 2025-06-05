@@ -48,14 +48,24 @@
 		</div>
 	</div>
 }
-<GeneralDepartmentDialog @ref="generalDepartmentDialog"/>
+<GeneralDepartmentDialog @ref="generalDepartmentDialog"
+HandleSaveOperationEvent="HandleSaveOperationEvent"
+GeneralDapartment="GeneralDepartment"/>
 @code {
 	GeneralDepartmentDialog? generalDepartmentDialog;
-	GeneralDepartment Department = new();
+	GeneralDepartment GeneralDepartment = new();
+	public string Title { get; set; } = "Add";
+	public List<GeneralDepartment> GeneralDepartments { get; set; } = new();
 
-	protected override void OnInitialized()
+	protected async override Task OnInitializedAsync()
 	{
-		dapartmentState.GeneralDepartmentAction += StateHasChanged;
+		await GetGeneralDepartments();
+		allState.Action += StateHasChanged;
+	}
+
+	private async Task GetGeneralDepartments()
+	{
+		GeneralDepartments = await generalDepartmentService.GetAll(Constants.GeneralDepartmentBaseUrl);
 	}
 
 	void OpenDialog() 
@@ -63,8 +73,50 @@
 		generalDepartmentDialog?.OpenDialog();
 	}
 
+	private async Task HandleSaveOperationEvent(GeneralDepartment generalDepartment)
+	{
+		bool successCheck = false;
+		if (generalDepartment.Id > 0)
+		{
+			var result = await generalDepartmentService.Update(generalDepartment, Constants.GeneralDepartmentBaseUrl);
+			successCheck = await DisplayMessage(result.Flag, result.Massage);
+		}
+		else
+		{
+			var result = await generalDepartmentService.Insert(generalDepartment, Constants.GeneralDepartmentBaseUrl);
+			successCheck = await DisplayMessage(result.Flag, result.Massage);
+		}
+		if (successCheck)
+		{
+			GeneralDepartment = new();
+			await GetGeneralDepartments();
+			generalDepartmentDialog?.ChangeTitle("Add");
+		}
+	}
+
+	private void EditClicked(GeneralDepartment dep)
+	{
+		generalDepartmentDialog?.ChangeTitle("Update");
+		GeneralDepartment = dep;
+		OpenDialog();
+	}
+
+	private async Task<bool> DisplayMessage(bool flag, string message)
+	{
+		if (flag)
+		{
+			await dialogService.AlertAsync(message, "Success Operation");
+			return true;
+		}
+		else
+		{
+			await dialogService.AlertAsync(message, "Alert!");
+			return false;
+		}
+	}
+
 	public void Dispose()
 	{
-		dapartmentState.GeneralDepartmentAction -= StateHasChanged;
+		allState.Action -= StateHasChanged;
 	}
 }
