@@ -3,7 +3,7 @@
 public class AllState
 {
     //Scope action
-    public Action? GeneralDepartmentAction { get; set; }
+    public Action? Action { get; set; }
 
     //General department
     public bool ShowGeneralDepartment { get; set; }
@@ -11,7 +11,7 @@ public class AllState
     {
         ResetAllDepartments();
         ShowGeneralDepartment = true;
-        GeneralDepartmentAction?.Invoke();
+        Action?.Invoke();
     }
 
     //Department
@@ -20,6 +20,14 @@ public class AllState
     {
         ResetAllDepartments();
         ShowDepartment = true;
+        Action?.Invoke();
+    }
+
+    public bool ShowBranch { get; set; }
+    public void BranchClicked()
+    {
+        ResetAllDepartments();
+        ShowBranch = true;
         Action?.Invoke();
     }
 
@@ -71,5 +79,12 @@ public class AllState
     private void ResetAllDepartments()
     {
         ShowGeneralDepartment = false;   
+        ShowDepartment = false;
+        ShowBranch = false;
+        ShowCountry = false;
+        ShowCity = false;
+        ShowTown = false;
+        ShowUser = false;
+        ShowEmployee = false;
     }
 }
