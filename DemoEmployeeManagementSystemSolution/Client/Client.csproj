@@ -15,6 +15,7 @@
     <PackageReference Include="Syncfusion.Blazor.Buttons" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Popups" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="23.1.36" />
+    <PackageReference Include="Syncfusion.Licensing" Version="29.2.9" />
   </ItemGroup>
 
   <ItemGroup>

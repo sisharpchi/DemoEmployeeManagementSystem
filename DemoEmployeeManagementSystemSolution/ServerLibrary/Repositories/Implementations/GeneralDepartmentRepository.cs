@@ -23,7 +23,7 @@ public class GeneralDepartmentRepository(AppDbContext appDbContext) : IGenericRe
     public async Task<GeneralRepsonse> Insert(GeneralDepartment item)
     {
         var checkIfNull = await CheckName(item.Name);
-        if (checkIfNull) return new GeneralRepsonse(false, "General Department already added");
+        if (!checkIfNull) return new GeneralRepsonse(false, "General Department already added");
         await appDbContext.GeneralDepartments.AddAsync(item);
         await Commit();
         return Success();
