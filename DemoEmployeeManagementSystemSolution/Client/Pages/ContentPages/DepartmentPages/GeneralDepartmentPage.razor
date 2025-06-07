@@ -54,9 +54,17 @@
 		</div>
 	</div>
 }
+
 <GeneralDepartmentDialog @ref="generalDepartmentDialog"
-HandleSaveOperationEvent="HandleSaveOperationEvent"
-GeneralDapartment="GeneralDepartment"/>
+						 HandleSaveOperationEvent="HandleSaveOperationEvent"
+						 GeneralDapartment="GeneralDepartment"/>
+
+<style>
+	.cursorStyle {
+		cursor: pointer;
+	}
+</style>
+
 @code {
 	GeneralDepartmentDialog? generalDepartmentDialog;
 	GeneralDepartment GeneralDepartment = new();

@@ -1,0 +1,70 @@
+﻿<SfDialog Width="280px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+	<DialogEvents OnOpen="OpenDialog"> </DialogEvents>
+	<DialogTemplates>
+		<Header> @Title Department </Header>
+		<Content>
+			<EditForm Model="Department" Enhance OnSubmit="Save">
+				<div class="card border-success">
+					<div class="card-body">
+						<div class="form-group">
+							<label class="form-label">Id</label>
+							<input @bind="Department.Id" class="form-control" disabled/>
+						</div>
+						<div class="form-group">
+							<label class="form-label">Name</label>
+							<InputText @bind-Value"="Department.Name" class="form-control" />
+						</div>
+						<div class="form-group mt-3 mb-3">
+							<label class="form-label">Select General Department</label>
+
+							@if (Department.GeneralDepartment != null)
+							{
+								string selected = Department.GeneralDepartment!.Name;
+								<SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="@selected" DataSource="General">
+									<DropDownListFiledSettings Value="Id" Text="Name"></DropDownListFiledSettings>
+									<DropDownListEvents TValue="string" TItem="GeneralDepartment" ValueChange="OnValueChange"></DropDownListEvents>
+								</SfDropDownList>
+							}
+							else
+							{
+								
+							}
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</Content>
+	</DialogTemplates>
+</SfDialog>
+
+@code {
+	[Parameter] public Department Department { get; set; } = new();
+	[Parameter] public List<GeneralDepartment> GeneralDepartments { get; set; } = new();
+	[Parameter] public EventCallback<Department> HandleSaveOperationEvent { get; set; }
+
+	private bool IsVisible { get; set; } = false;
+	public string Title { get; set; } = "Add";
+	private async void Save()
+	{
+		if (string.IsNullOrEmpty(Department.Name) || Department.GeneralDepartmentId <= 0)
+			await dialogService.AlertAsync("You need to provide Department name.", "Alert!");
+		else
+			await HandleSaveOperationEvent.InvokeAsync(Department);
+	}
+
+	public void OpenDialog()
+	{
+		IsVisible = true;
+		StateHasChanged();
+	}
+
+	public void ChangeTitle(string title)
+	{
+		Title = title;
+	}
+
+	public void OnValueChange(ChangeEventArgs<string, GeneralDepartment> args)
+	{
+		Department.GeneralDepartmentId = int.Parse(args.Value);
+	}
+}
