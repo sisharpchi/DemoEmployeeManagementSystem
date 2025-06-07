@@ -47,7 +47,7 @@ builder.Services.AddScoped<IGenericServiceInterface<Employee>, GenericSeriveImpl
 
 builder.Services.AddScoped<AllState>();
 
-SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NNaF1cWWhPYVJ1WmFZfVtgdVdMZFlbRnBPIiBoS35Rc0VlWXlfcnBQRGZZUER3VEBU");
+//SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NNaF1cWWhPYVJ1WmFZfVtgdVdMZFlbRnBPIiBoS35Rc0VlWXlfcnBQRGZZUER3VEBU");
 builder.Services.AddSyncfusionBlazor();
 builder.Services.AddScoped<SfDialogService>();
 

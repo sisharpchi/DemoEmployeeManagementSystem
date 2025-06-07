@@ -10,7 +10,7 @@
 						<h4 class="float-start">General Department</h4>
 						<button class="btn btn-outline-success float-end" @onclick="OpenDialog"><i class="bi bi-plus-circle-dotted"></i> Add Department</button>
 					</div>
-					<div class="card-header">
+					<div class="card-header" style="max-height:500px; overflow-x:hidden; overflow-y:scroll;">
 						<div class="card-body">
 							<table class="table table-striped">
 								<thead>
@@ -33,7 +33,7 @@
 												<td>@item.Name</td>
 												<td>
 													<i class="bi bi-pencil text-info" id="cursorStyle" @onclick="() => EditClicked(item)"></i>
-													@* <i class="bi bi-trash text-danger" id="cursorStyle" @onclick="() => DeleteClicked(item)"></i> *@
+													<i class="bi bi-trash text-danger" id="cursorStyle" @onclick="() => DeleteClicked(item)"></i>
 												</td>
 											</tr>
 											count++;
@@ -79,6 +79,7 @@ GeneralDapartment="GeneralDepartment"/>
 		generalDepartmentDialog?.OpenDialog();
 	}
 
+	//Add or Update
 	private async Task HandleSaveOperationEvent(GeneralDepartment generalDepartment)
 	{
 		bool successCheck = false;
@@ -100,11 +101,23 @@ GeneralDapartment="GeneralDepartment"/>
 		}
 	}
 
+	//Edit
 	private void EditClicked(GeneralDepartment dep)
 	{
 		generalDepartmentDialog?.ChangeTitle("Update");
 		GeneralDepartment = dep;
 		OpenDialog();
+	}
+
+	//Delete
+	private async Task DeleteClicked(GeneralDepartment dep)
+	{
+		bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {dep.Name}?", "Confirm Delete");
+		if (!confirm) return;
+	
+		var response = await generalDepartmentService.DeleteById(dep.Id, Constants.GeneralDepartmentBaseUrl);
+		if (await DisplayMessage(response.Flag, response.Massage))
+			await GetGeneralDepartments();
 	}
 
 	private async Task<bool> DisplayMessage(bool flag, string message)
