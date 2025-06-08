@@ -1,0 +1,126 @@
+﻿@implements IDisposable
+
+@if (allState.ShowDepartment)
+{
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="float-start">Departments</h4>
+						<button class="btn btn-outline-success float-end" @onclick="AddButtonClicked"><i class="bi bi-plus-circle-dotted"></i> Add </button>
+					</div>
+					<div class="card-header" style="max-height:580px; overflow-x:hidden; overflow-y:scroll;">
+						<div class="card-body">
+							@* <table 6:53:03 (13 line)*@ 
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<style>
+	#cursor {
+	cursor: pointer;
+	}
+</style>
+
+<DepartmentDialog @ref="departmentDialog"
+HandleSaveOperationEvent="HandleSaveOperationEvent" 
+Department="Department"
+GeneralDepartments="GeneralDepartments"/>
+
+@code {
+	public string Title { get; set; } = "Add";
+	DepartmentDialog? departmentDialog;
+	Department Department = new();
+	public List<GeneralDepartment> GeneralDepartments { get; set; } = new();
+	public List<Department> Departments { get; set; } = new();
+	protected async override Task OnInitializedAsync()
+	{
+		await GetDepartments();
+		await GetGeneralDepartments();
+		allState.Action += StateHasChanged;
+	}
+
+	private async Task GetDepartments()
+	{
+		Departments = await departmentService.GetAll(Constants.DepartmentBaseUrl);
+	}
+
+	private async Task GetGeneralDepartments()
+	{
+		GeneralDepartments = await generalDepartmentService.GetAll(Constants.GeneralDepartmentBaseUrl);
+	}
+
+	void AddButtonClicked()
+	{
+		departmentDialog?.ChangeTitle("Add");
+		Department = new();
+		OpenDialog();
+	}
+
+	void OpenDialog()
+	{
+		departmentDialog?.OpenDialog();
+	}
+
+	private async Task HandleSaveOperationEvent(Department department)
+	{
+		bool successCheck = false;
+		if (Department.Id > 0)
+		{
+			var result = await departmentService.Update(department, Constants.DepartmentBaseUrl);
+			successCheck = await DisplayMassage(result.Flag, result.Massage);
+		}
+		else
+		{
+			var result = await departmentService.Insert(department, Constants.DepartmentBaseUrl);
+			successCheck = await DisplayMassage(result.Flag, result.Massage);
+		}
+		if (successCheck)
+		{
+			Department = new();
+			await GetDepartments();
+			departmentDialog?.ChangeTitle("Add");
+		}
+	}
+
+	private void EditClicked(Department dep)
+	{
+		departmentDialog?.ChangeTitle("Update");
+		Department = dep;
+		OpenDialog();
+	}
+
+	private async Task DeleteClicked(Department dep)
+	{
+		bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {dep.Name}?", "Confirm Delete");
+		if (!confirm) return;
+
+		var response = await departmentService.DeleteById(dep.Id, Constants.DepartmentBaseUrl);
+		var result = await DisplayMassage(response.Flag, response.Massage);
+		if (result) await GetDepartments();
+	}
+
+	private async Task<bool> DisplayMassage(bool flag, string message)
+	{
+		if (flag)
+		{
+			await dialogService.AlertAsync(message, "Success Operation");
+			return true;
+		}
+		else
+		{
+			await dialogService.AlertAsync(message, "Alter!");
+			return false;
+		}
+	}	
+	
+	public void Dispose()
+	{
+		allState.Action -= StateHasChanged;
+	}
+}

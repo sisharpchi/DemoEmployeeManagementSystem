@@ -16,18 +16,20 @@
 						</div>
 						<div class="form-group mt-3 mb-3">
 							<label class="form-label">Select General Department</label>
-
 							@if (Department.GeneralDepartment != null)
 							{
 								string selected = Department.GeneralDepartment!.Name;
-								<SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="@selected" DataSource="General">
-									<DropDownListFiledSettings Value="Id" Text="Name"></DropDownListFiledSettings>
+								<SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="@selected" DataSource="GeneralDepartments">
+									<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 									<DropDownListEvents TValue="string" TItem="GeneralDepartment" ValueChange="OnValueChange"></DropDownListEvents>
 								</SfDropDownList>
 							}
 							else
 							{
-								
+								<SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="Select General Department" DataSource="GeneralDepartments">
+									<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+									<DropDownListEvents TValue="string" TItem="GeneralDepartment" ValueChange="OnValueChange"></DropDownListEvents>
+								</SfDropDownList>
 							}
 						</div>
 					</div>
@@ -35,6 +37,11 @@
 			</EditForm>
 		</Content>
 	</DialogTemplates>
+
+	<DialogButtons>
+		<DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save" />
+	</DialogButtons>
+
 </SfDialog>
 
 @code {
