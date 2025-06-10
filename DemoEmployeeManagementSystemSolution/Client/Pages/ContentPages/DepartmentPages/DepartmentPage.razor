@@ -8,11 +8,47 @@
 				<div class="card">
 					<div class="card-header">
 						<h4 class="float-start">Departments</h4>
-						<button class="btn btn-outline-success float-end" @onclick="AddButtonClicked"><i class="bi bi-plus-circle-dotted"></i> Add </button>
+						<button class="btn btn-outline-success float-end" @onclick="AddButtonClicked"><i class="bi bi-plus-circle-dotted"></i> Add Department </button>
 					</div>
 					<div class="card-header" style="max-height:580px; overflow-x:hidden; overflow-y:scroll;">
 						<div class="card-body">
-							@* <table 6:53:03 (13 line)*@ 
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Id</th>
+										<th scope="col">General Department</th>
+										<th scope="col">Department</th>
+										<th scope="col">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (Departments is not null)
+									{
+										int count = 1;
+										foreach (var item in Departments)
+										{
+											<tr>
+												<th scope="row">@count</th>
+												<td>@item.Id</td>
+												<td>@item.GeneralDepartment!.Name</td>
+												<td>@item.Name</td>
+												<td>
+													<i class="bi bi-pencil text-info" id="cursorStyle" @onclick="()=>EditClicked(item)"></i>
+													<i class="bi bi-trash text-danger" id="cursorStyle" @onclick="()=>DeleteClicked(item)"></i>
+												</td>
+											</tr>
+											count++;
+										}
+									}
+									else
+									{
+										<tr>
+											<td colspan="4"><div class="alter alter-info text-center">No Department added yet!</div></td>
+										</tr>
+									}
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
