@@ -12,8 +12,8 @@ using ServerLibrary.Data;
 namespace ServerLibrary.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250519154907_SomeChanges")]
-    partial class SomeChanges
+    [Migration("20250611082809_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -531,7 +531,7 @@ namespace ServerLibrary.Data.Migrations
             modelBuilder.Entity("BaseLibrary.Entities.Overtime", b =>
                 {
                     b.HasOne("BaseLibrary.Entities.OvertimeType", "OvertimeType")
-                        .WithMany()
+                        .WithMany("Overtimes")
                         .HasForeignKey("OvertimeTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -593,6 +593,11 @@ namespace ServerLibrary.Data.Migrations
             modelBuilder.Entity("BaseLibrary.Entities.GeneralDepartment", b =>
                 {
                     b.Navigation("Departments");
+                });
+
+            modelBuilder.Entity("BaseLibrary.Entities.OvertimeType", b =>
+                {
+                    b.Navigation("Overtimes");
                 });
 
             modelBuilder.Entity("BaseLibrary.Entities.SancitonType", b =>
