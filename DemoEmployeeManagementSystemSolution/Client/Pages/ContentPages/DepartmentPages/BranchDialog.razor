@@ -1,0 +1,78 @@
+﻿<SfDialog Width="280px" IsModal="true" ShowCloseIcon="true" @bind-bind-Visible="IsVisible">
+	<DialogEvents OnOpen="OpenDialog"> </DialogEvents>
+	<DialogTemplates>
+		<Header> @Title Branch </Header>
+		<Content>
+			<EditForm Model="Branch" Enhance OnSubmit="Save">
+				<div class="card border-success">
+					<div class="card-body">
+						<div class="form-group">
+							<label class="form-label">Id</label>
+							<input @bind="Branch.Id" class="form-control" disabled />
+						</div>
+						<div class="form-group">
+							<label class="form-label">Name</label>
+							<InputText @bind-Value="Branch.Name" class="form-control" />
+						</div>
+						<div class="form-group mt-3 mb-3">
+							<label class="form-label">Select Branch</label>
+
+							@if (Branch.Department != null)
+							{
+								string selected = Branch.Department!.Name;
+								<SfDropDownList TValue="string" TItem="Department" Placeholder="@selected" DataSource="Departments">
+									<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+									<DropDownListEvents TValue="string" TItem="Department" ValueChange="OnValueChange"></DropDownListEvents>
+								</SfDropDownList>
+							}
+							else
+							{
+								<SfDropDownList TValue="string" TItem="Department" Placeholder="Select Department" DataSource="Departments">
+									<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+									<DropDownListEvents TValue="string" TItem="Department" ValueChange="OnValueChange"></DropDownListEvents>
+								</SfDropDownList>
+							}
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</Content>
+	</DialogTemplates>
+
+	<DialogButtons>
+		<DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save" />
+	</DialogButtons>
+
+</SfDialog>
+
+@code {
+	[Parameter] public Branch Branch { get; set; } = new();
+	[Parameter] public List<Department> Departments { get; set; } = new();
+	[Parameter] public EventCallback<Branch> HandleSaveOperationEvent { get; set; }
+
+	private bool IsVisible { get; set; } = false;
+	public string Title { get; set; } = "Add";
+	private async void Save()
+	{
+		if (string.IsNullOrEmpty(Branch.Name) || Branch.DepartmentId <= 0)
+			await dialogService.AlertAsync("You need to provide Branch name.", "Alert!");
+		else
+			await HandleSaveOperationEvent.InvokeAsync(Branch);
+	}
+
+	public void OpenDialog()
+	{
+		IsVisible = true;
+		StateHasChanged();
+	}
+
+	public void ChangeTitle(string title)
+	{
+		Title = title;
+	}
+
+	public void OnValueChange(ChangeEventArgs<string, Department> args)
+	{
+		Branch.DepartmentId = int.Parse(args.Value);
+	}
+}

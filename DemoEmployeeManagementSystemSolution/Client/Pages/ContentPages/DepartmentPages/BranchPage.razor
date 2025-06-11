@@ -1,0 +1,21 @@
+﻿<h3>BranchPage</h3>
+
+@code {
+	public string Title { get; set; } = "Add";
+	BranchDialog? branchDialog;
+	public List<Department> Departments { get; set; } = new();
+	public List<Branch> Branches { get; set; } = new();
+	protected override async Task OnInitializedAsync()
+	{
+		await GetBranches();
+		await GetDepartments();
+		allState.Action += StateHasChanged;
+	}
+
+	private async Task GetBranches()
+	{
+		Branches = await branchService.GetAll(Constants.BranchBaseUrl);
+	}
+
+
+}
