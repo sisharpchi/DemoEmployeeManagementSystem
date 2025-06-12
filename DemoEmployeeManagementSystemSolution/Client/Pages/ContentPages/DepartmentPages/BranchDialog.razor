@@ -1,4 +1,4 @@
-﻿<SfDialog Width="280px" IsModal="true" ShowCloseIcon="true" @bind-bind-Visible="IsVisible">
+﻿<SfDialog Width="280px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
 	<DialogEvents OnOpen="OpenDialog"> </DialogEvents>
 	<DialogTemplates>
 		<Header> @Title Branch </Header>
@@ -15,7 +15,7 @@
 							<InputText @bind-Value="Branch.Name" class="form-control" />
 						</div>
 						<div class="form-group mt-3 mb-3">
-							<label class="form-label">Select Branch</label>
+							<label class="form-label">Select Department</label>
 
 							@if (Branch.Department != null)
 							{

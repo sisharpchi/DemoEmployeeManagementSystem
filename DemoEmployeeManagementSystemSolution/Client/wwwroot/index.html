@@ -6,17 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Client</title>
     <base href="/" />
-    
+
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="Client.styles.css" rel="stylesheet" />
 
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
-    
+
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <link href="_content/Syncfusion.Blazor.Themes/bootstrap5.css" rel="stylesheet" />
     <script src="_content/Syncfusion.Blazor.Core/scripts/syncfusion-blazor.min.js" type="text/javascript"></script>
+    <style>
+        div[class*='e-license'] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,6 +39,20 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                const licenseBanner = Array.from(document.querySelectorAll('div'))
+                    .find(div => div.textContent?.includes('This application was built using a trial version of Syncfusion'));
+
+                if (licenseBanner) {
+                    licenseBanner.remove();
+                    console.log("Syncfusion banner removed.");
+                }
+            }, 1000); // 1 sekunddan keyin tekshiradi
+        });
+    </script>
+
 </body>
 
 </html>

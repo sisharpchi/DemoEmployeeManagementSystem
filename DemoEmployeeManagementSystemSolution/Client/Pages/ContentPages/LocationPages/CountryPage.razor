@@ -1,0 +1,51 @@
+﻿<h3>CountryPage</h3>
+
+<style>
+	#cursorStyle
+	{
+	cursor: pointer;
+	}
+</style>
+
+<CountryDialog @ref="countryDialog"
+			   HandleSaveOperationEvent="HandleSaveOperationEvent"
+			   Country="Country" />
+
+@code {
+	public string Title { get; set; } = "Add";
+	CountryDialog? countryDialog;
+	Country Country = new();
+	public List<Country> Countries { get; set; } = new();
+
+	protected async override Task OnInitializedAsync()
+	{
+		await GetCountries();
+		allState.Action += StateHasChanged;
+	}
+
+	private async Task GetCountries()
+	{
+		Countries = await countryService.GetAll(Constants.CountryBaseUrl);
+	}
+
+	void AddButtonClicked()
+	{
+		countryDialog?.ChangeTitle("Add Country");
+		Country = new();
+		OpenDialog();
+	}
+
+	void OpenDialog()
+	{
+		countryDialog?.OpenDialog();
+	}
+
+	// private async Task HandleSaveOperationEvent()
+	// {
+	// 	bool successCheck = false;
+	// 	if (Country.Id > 0)
+	// 	{
+	// 		var result = await countryService.
+	// 	}
+	// }
+}
