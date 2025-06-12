@@ -1,15 +1,69 @@
-﻿<h3>CountryPage</h3>
+﻿@implements IDisposable
+@if (allState.ShowCountry)
+{
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="float-start">Countries</h4>
+						<button class="btn btn-outline-success float-end" @onclick="AddButtonClicked"><i class="bi bi-plus-circle-dotted"></i> Add Country </button>
+					</div>
+					<div class="card-header" style="max-height:580px; overflow-x:hidden; overflow-y:scroll;">
+						<div class="card-body">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Id</th>
+										<th scope="col">Country</th>
+										<th scope="col">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (Countries is not null)
+									{
+										int count = 1;
+										foreach (var item in Countries)
+										{
+											<tr>
+												<th scope="row">@count</th>
+												<td>@item.Id</td>
+												<td>@item.Name</td>
+												<td>
+													<i class="bi bi-pencil text-info" id="cursorStyle" @onclick="() => EditClicked(item)"></i>
+													<i class="bi bi-trash text-danger" id="cursorStyle" @onclick="() => DeleteClicked(item)"></i>
+												</td>
+											</tr>
+											count++;
+										}
+									}
+									else
+									{
+										<tr>
+											<td colspan="4"><div class="alert alert-info text-center">No Country added yet!</div></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
 
 <style>
-	#cursorStyle
-	{
-	cursor: pointer;
+	#cursorStyle {
+		cursor: pointer;
 	}
 </style>
 
 <CountryDialog @ref="countryDialog"
-			   HandleSaveOperationEvent="HandleSaveOperationEvent"
-			   Country="Country" />
+			HandleSaveOperationEvent="HandleSaveOperationEvent"
+			Country="Country" />
 
 @code {
 	public string Title { get; set; } = "Add";
@@ -40,12 +94,60 @@
 		countryDialog?.OpenDialog();
 	}
 
-	// private async Task HandleSaveOperationEvent()
-	// {
-	// 	bool successCheck = false;
-	// 	if (Country.Id > 0)
-	// 	{
-	// 		var result = await countryService.
-	// 	}
-	// }
+	private async Task HandleSaveOperationEvent(Country country)
+	{
+		bool successCheck = false;
+		if (country.Id > 0)
+		{
+			var result = await countryService.Update(country, Constants.CountryBaseUrl);
+			successCheck = await DisplayMessage(result.Flag, result.Massage);
+		}
+		else
+		{
+			var response = await countryService.Insert(country, Constants.CountryBaseUrl);
+			successCheck = await DisplayMessage(response.Flag, response.Massage);
+		}
+		if (successCheck)
+		{
+			Country = new();
+			await GetCountries();
+			countryDialog?.ChangeTitle("Add");
+		}
+	}
+
+	private void EditClicked(Country item)
+	{
+		countryDialog?.ChangeTitle("Update");
+		Country = item;
+		OpenDialog();
+	}
+
+	private async Task DeleteClicked(Country item)
+	{
+		bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {item.Name}?", "Confirm Delete");
+		if (!confirm) return;
+
+		var response = await countryService.DeleteById(item.Id, Constants.CountryBaseUrl);
+		if (await DisplayMessage(response.Flag, response.Massage))
+			await GetCountries();
+	}
+
+	private async Task<bool> DisplayMessage(bool flag, string message)
+	{
+		if (flag)
+		{
+			await dialogService.AlertAsync(message, "Success Operation");
+			return true;
+		}
+		else
+		{
+			await dialogService.AlertAsync(message, "Alert!");
+			return false;
+		}
+	}
+
+	public void Dispose()
+	{
+		allState.Action -= StateHasChanged;
+	}
 }
