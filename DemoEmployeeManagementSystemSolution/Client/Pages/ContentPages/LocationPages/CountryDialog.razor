@@ -34,7 +34,7 @@
 	private async void Save()
 	{
 		if (string.IsNullOrEmpty(Country.Name))
-			await dialogService.AlertAsync("You need to provide country name.", "Alert!");
+			await dialogService.AlertAsync("You need to provide Country name.", "Alert!");
 		else
 			await HandleSaveOperationEvent.InvokeAsync(Country);
 	}

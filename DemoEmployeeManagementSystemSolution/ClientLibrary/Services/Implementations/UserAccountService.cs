@@ -1,4 +1,5 @@
 ﻿using BaseLibrary.DTOs;
+using BaseLibrary.Entities;
 using BaseLibrary.Responses;
 using ClientLibrary.Helpers;
 using ClientLibrary.Services.Contracts;
@@ -37,10 +38,36 @@ public class UserAccountService(GetHttpClient getHttpClient) : IUserAccountServi
         return await result.Content.ReadFromJsonAsync<LoginResponse>()!;
     }
 
-    public async Task<WeatherForecast[]> GetWeatherForecast()
+
+    public async Task<List<ManagerUser>> GetUsers()
     {
         var httpClient = await getHttpClient.GetPrivateHttpClinet();
-        var result = await httpClient.GetFromJsonAsync<WeatherForecast[]>("api/weatherforecast");
+        var result = await httpClient.GetFromJsonAsync<List<ManagerUser>>($"{AuthUrl}/users");
         return result!;
+    }
+
+    public async Task<GeneralRepsonse> UpdateUser(ManagerUser user)
+    {
+        var httpClient = getHttpClient.GetPublicHttpClient();
+        var result = await httpClient.PutAsJsonAsync($"{AuthUrl}/update-user", user);
+        if (!result.IsSuccessStatusCode) return new GeneralRepsonse(false, "Error occurred");
+
+        return await result.Content.ReadFromJsonAsync<GeneralRepsonse>()!;
+    }
+
+    public async Task<List<SystemRole>> GetRoles()
+    {
+        var httpClient = await getHttpClient.GetPrivateHttpClinet();
+        var result = await httpClient.GetFromJsonAsync<List<SystemRole>>($"{AuthUrl}/roles");
+        return result!;
+    }
+
+    public async Task<GeneralRepsonse> DeleteUser(int id)
+    {
+        var httpClient = await getHttpClient.GetPrivateHttpClinet();
+        var result = await httpClient.DeleteAsync($"{AuthUrl}/delete-user/{id}");
+        if (!result.IsSuccessStatusCode) return new GeneralRepsonse(false, "Error occurred");
+
+        return await result.Content.ReadFromJsonAsync<GeneralRepsonse>()!;
     }
 }

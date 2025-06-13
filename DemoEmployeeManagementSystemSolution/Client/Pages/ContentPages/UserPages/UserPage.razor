@@ -1,0 +1,76 @@
+﻿<h3>UserPage</h3>
+
+@code {
+	UserDialog? userDialog;
+	ManagerUser ManagerUser = new();
+	public List<ManagerUser> ManagerUsers { get; set; } = new();
+	public List<SystemRole> SystemRoles { get; set; } = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await GetUsers();
+		await GetRoles();
+		allState.Action += StateHasChanged;
+	}
+
+	private async Task GetUsers()
+	{
+		ManagerUsers = await accountService.GetUsers();
+	}
+
+	private async Task GetRoles()
+	{
+		SystemRoles = await accountService.GetRoles();
+	}
+
+	void OpenDialog()
+	{
+		userDialog?.OpenDialog();
+	}
+
+	private async Task HandleSaveOperationEvent(ManagerUser managerUser)
+	{
+		var result = await accountService.UpdateUser(managerUser);
+		bool successCheck = await DisplayMessage(result.Flag, result.Massage);
+		if(successCheck)
+		{
+			ManagerUser = new();
+			await GetUsers();
+		}
+	}
+
+	private void EditClicked(ManagerUser user)
+	{
+		ManagerUser = user;
+		OpenDialog();
+	}
+
+	private async Task DeleteClicked(ManagerUser user)
+	{
+		bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {user.Name}", "Confirm Delete");
+		if (!confirm) return;
+
+		var response = await accountService.DeleteUser(user.UserId);
+		var result = await DisplayMessage(response.Flag, response.Massage);
+		if (result) await GetUsers();
+	}
+
+	private async Task<bool> DisplayMessage(bool flag, string message)
+	{
+		if (flag)
+		{
+			await dialogService.AlertAsync(message, "Success Operation");
+			return true;
+		}
+		else
+		{
+			await dialogService.AlertAsync(message, "Alert!");
+			return false;
+		}
+	}
+
+	public void Dispose()
+	{
+		allState.Action -= StateHasChanged;
+	}
+}

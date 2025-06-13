@@ -146,4 +146,38 @@ public class UserAccountRepository(IOptions<JwtSection> config, AppDbContext app
         await appDbContext.SaveChangesAsync();
         return new LoginResponse(true, "Token refreshed successfully", jwtToken, refreshToken);
     }
+
+    public async Task<List<ManagerUser>> GetUsers()
+    {
+        var allUsers = await GetApplicationUsers();
+        var allUserRoles = await UserRoles();
+        var allRoles = await SystemRoles();
+
+        if (allUsers.Count == 0 || allRoles.Count == 0) return null!;
+
+        var users = new List<ManagerUser>();
+
+        foreach (var user in allUsers)
+        {
+            var userRole = allUserRoles.FirstOrDefault(u => u.UserId == user.Id);
+            var roleName = allRoles.FirstOrDefault(r => r.Id == userRole!.RoleId);
+            users.Add(new ManagerUser() { UserId = user.Id, Name = user.FullName!, Email = user.Email!, Role = roleName!.Name! });
+        }
+        return users;
+    }
+
+    public Task<GeneralRepsonse> UpdateUser(ManagerUser user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<SystemRole>> GetRoles()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<GeneralRepsonse> DeleteUser(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

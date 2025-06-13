@@ -17,13 +17,13 @@ public class TownRepository(AppDbContext appDbContext) : IGenericRepositoryInter
         return Success();
     }
 
-    public async Task<List<Town>> GetAll() => await appDbContext.Towns.ToListAsync();
+    public async Task<List<Town>> GetAll() => await appDbContext.Towns.AsNoTracking().Include(t => t.City).ToListAsync();
 
     public async Task<Town> GetById(int id) => await appDbContext.Towns.FindAsync(id);
 
     public async Task<GeneralRepsonse> Insert(Town item)
     {
-        if (!await CheckName(item.Name!)) return new GeneralRepsonse(false, "Town already added");
+        if (!await CheckName(item.Name!)) return new GeneralRepsonse(false, $"{item.Name} already added");
         await appDbContext.Towns.AddAsync(item);
         await Commit();
         return Success();
@@ -31,9 +31,10 @@ public class TownRepository(AppDbContext appDbContext) : IGenericRepositoryInter
 
     public async Task<GeneralRepsonse> Update(Town item)
     {
-        var dep = await appDbContext.Cities.FindAsync(item.Id);
-        if (dep is null) return NotFound();
-        dep.Name = item.Name;
+        var town = await appDbContext.Towns.FindAsync(item.Id);
+        if (town is null) return NotFound();
+        town.Name = item.Name;
+        town.City = item.City;
         await Commit();
         return Success();
     }

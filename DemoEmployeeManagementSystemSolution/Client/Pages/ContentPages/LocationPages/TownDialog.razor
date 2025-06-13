@@ -1,0 +1,78 @@
+﻿<SfDialog Width="280px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+	<DialogEvents OnOpen="OpenDialog"></DialogEvents>
+	<DialogTemplates>
+		<Header> @Title Town </Header>
+		<Content>
+			<EditForm Model="Town" Enhance OnSubmit="Save">
+				<div class="card border-success">
+					<div class="card-body">
+						<div class="form-group">
+							<label class="form-label">Id</label>
+							<input @bind="Town.Id" class="form-control" disabled />
+						</div>
+						<div class="form-group">
+							<label class="form-label">Name</label>
+							<InputText @bind-Value="Town.Name" class="form-control" />
+						</div>
+						<div class="form-group mt-3 mb-3">
+							<label class="form-label">Select City</label>
+							@if (Town.City != null)
+							{
+								string selected = Town.City!.Name;
+								<SfDropDownList TValue="string" TItem="City" Placeholder="@selected" DataSource="Cities">
+									<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+									<DropDownListEvents TValue="string" TItem="City" ValueChange="OnValueChanged"></DropDownListEvents>
+								</SfDropDownList>
+							}
+							else
+							{
+								<SfDropDownList TValue="string" TItem="City" Placeholder="Select City" DataSource="Cities">
+									<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+									<DropDownListEvents TValue="string" TItem="City" ValueChange="OnValueChanged"></DropDownListEvents>
+								</SfDropDownList>
+							}
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</Content>
+	</DialogTemplates>
+
+	<DialogButtons>
+		<DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save" />
+	</DialogButtons>
+
+</SfDialog>
+@code {
+	[Parameter] public Town Town { get; set; } = new();
+	[Parameter] public List<City> Cities { get; set; } = new();
+	[Parameter] public EventCallback<Town> HandleSaveOperationEvent { get; set; }
+
+	private bool IsVisible { get; set; } = false;
+	private string Title { get; set; } = "Add";
+
+	private async void Save()
+	{
+		if (string.IsNullOrEmpty(Town.Name) || Town.CityId <= 0)
+			await dialogService.AlertAsync("You need to provide Town Name.", "Alert!");
+		else
+			await HandleSaveOperationEvent.InvokeAsync(Town);
+
+	}
+
+	public void OpenDialog()
+	{
+		IsVisible = true;
+		StateHasChanged();
+	}
+
+	public void ChangeTitle(string title)
+	{
+		Title = title;
+	}
+
+	public void OnValueChanged(ChangeEventArgs<string, City> args)
+	{
+		Town.CityId = int.Parse(args.Value);
+	}
+}
