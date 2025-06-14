@@ -166,18 +166,26 @@ public class UserAccountRepository(IOptions<JwtSection> config, AppDbContext app
         return users;
     }
 
-    public Task<GeneralRepsonse> UpdateUser(ManagerUser user)
+    public async Task<GeneralRepsonse> UpdateUser(ManagerUser user)
     {
-        throw new NotImplementedException();
+        var getRole = (await SystemRoles()).FirstOrDefault(r => r.Name!.Equals(user.Role));
+        var userRole = await appDbContext.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == user.UserId);
+        userRole!.RoleId = getRole!.Id;
+        await appDbContext.SaveChangesAsync();
+        return new GeneralRepsonse(true, "User role updated successfully");
     }
 
-    public Task<List<SystemRole>> GetRoles()
+    public async Task<List<SystemRole>> GetRoles() => await SystemRoles();
+    
+    public async Task<GeneralRepsonse> DeleteUser(int id)
     {
-        throw new NotImplementedException();
+        var user = await appDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == id);
+        appDbContext.ApplicationUsers.Remove(user!);
+        await appDbContext.SaveChangesAsync();
+        return new GeneralRepsonse(true, "User successfully deleted");
     }
 
-    public Task<GeneralRepsonse> DeleteUser(int id)
-    {
-        throw new NotImplementedException();
-    }
+    private async Task<List<SystemRole>> SystemRoles() => await appDbContext.SystemRoles.AsNoTracking().ToListAsync();
+    private async Task<List<UserRole>> UserRoles() => await appDbContext.UserRoles.AsNoTracking().ToListAsync();
+    private async Task<List<ApplicationUser>> GetApplicationUsers() => await appDbContext.ApplicationUsers.AsNoTracking().ToListAsync();
 }

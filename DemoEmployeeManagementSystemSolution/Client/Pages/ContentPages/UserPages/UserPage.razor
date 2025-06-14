@@ -1,4 +1,72 @@
-﻿<h3>UserPage</h3>
+﻿@implements IDisposable
+@if (allState.ShowUser)
+{
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="float-start">Manage Users</h4>
+					</div>
+					<div class="card-header" style="max-height:500px; overflow-x:hidden; overflow-y:scroll;">
+						<div class="card-body">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Id</th>
+										<th scope="col">Name</th>
+										<th scope="col">Email</th>
+										<th scope="col">Role</th>
+										<th scope="col">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (ManagerUser is not null)
+									{
+										int count = 1;
+										foreach (var user in ManagerUsers)
+										{
+											<tr>
+												<th scope="row">@count</th>
+												<td>@user.UserId</td>
+												<td>@user.Name</td>
+												<td>@user.Email</td>
+												<td>@user.Role</td>
+												<td>
+													<i class="bi bi-pencil text-info" id="cursonStyle" @onclick="() => EditClicked(user)"></i>
+													<i class="bi bi-trash text-danger" id="cursonStyle" @onclick="() => DeleteClicked(user)"></i>
+												</td>
+											</tr>
+											count++;
+										}
+									}
+									else
+									{
+										<tr>
+											<td colspan="4"><div class="alert alert-info text-center">No User registered yet!</div></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<style>
+	#cursorStyle {
+		cursor: pointer;
+	}
+</style>
+
+<UserDialog @ref="userDialog"
+			ManagerUser="ManagerUser"
+			SystemRoles="SystemRoles"
+			HandleSaveOperationEvent="HandleSaveOperationEvent" />
 
 @code {
 	UserDialog? userDialog;
