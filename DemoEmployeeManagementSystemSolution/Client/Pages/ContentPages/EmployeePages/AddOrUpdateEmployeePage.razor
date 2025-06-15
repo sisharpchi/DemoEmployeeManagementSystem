@@ -31,7 +31,7 @@
 				@* //Employee form / first and second layer *@
 				<div class="col-lg-12">
 					<div class="container-fluid">
-						@if (FistLayer)
+						@if (FirstLayer)
 						{
 							<EditForm Enhance Model="EmployeeGroup1" OnValidSubmit="Form1">
 								<DataAnnotationsValidator />
@@ -104,21 +104,21 @@
 											</div>
 											<div class="form-group mt-3">
 												<label class="form-label">  </label>
-												<label class="form-label">@(GeneralDepartmentName == "" ? "Select General Department" : $"Selected General Department: {GeneralDepartmentName}")</label>
+												@* <label class="form-label">@(GeneralDepartmentName == "" ? "Select General Department" : $"Selected General Department: {GeneralDepartmentName}")</label> *@
 												<SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="Select General Department" DataSource="GeneralDepartments">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="GeneralDepartment" ValueChange="OnGeneralDepartmentChange"></DropDownListEvents>
 												</SfDropDownList>
 											</div>
 											<div class="form-group mt-3">
-												<label class="form-label">@(DepartmentName == "" ? "Select Department" : $"Selected Department: {DepartmentName}")</label>
+												@* <label class="form-label">@(DepartmentName == "" ? "Select Department" : $"Selected Department: {DepartmentName}")</label> *@
 												<SfDropDownList TValue="string" TItem="Department" Placeholder="Select Department" DataSource="Departments">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="Department" ValueChange="OnDepartmentChange"></DropDownListEvents>
 												</SfDropDownList>
 											</div>
 											<div class="form-group mt-3">
-												<label class="form-label">@(Employee.Branch == "" ? "Select Branch" : $"Selected Branch: {Employee.Branch.Name}")</label>
+												@* <label class="form-label">@(Employee.Branch == "" ? "Select Branch" : $"Selected Branch: {Employee.Branch.Name}")</label> *@
 												<SfDropDownList TValue="string" TItem="Branch" Placeholder="Select Branch" DataSource="Branches">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="Branch" ValueChange="OnBranchChange"></DropDownListEvents>
@@ -133,7 +133,43 @@
 											</div>
 										</div>
 									</div>
-
+									<div class="col-lg-4">
+										<div class="card-title mb-5 fw-bold" style="font-family:Tahoma">Location Information</div>
+										<div class="card-body">
+											<div class="form-group">
+												@* <label class="form-label"> @(CountryName == "" ? "Select Country" : $"Selected Country: {CountryName}") </label> *@
+												<SfDropDownList TValue="string" TItem="Country" Placeholder="Select Country" DataSource="Countries">
+													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+													<DropDownListEvents TValue="string" TItem="Country" ValueChange="OnCountryValueChange"></DropDownListEvents>
+												</SfDropDownList>
+											</div>
+											<div class="form-group mt-3">
+												@* <label class="form-label"> @(CityName == "" ? "Select City" : $"Selected City: {CityName}") </label> *@
+												<SfDropDownList TValue="string" TItem="City" Placeholder="Select City" DataSource="Cities">
+													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+													<DropDownListEvents TValue="string" TItem="City" ValueChange="OnCityValueChange"></DropDownListEvents>
+												</SfDropDownList>
+											</div>
+											<div class="form-group mt-3">
+												@* <label class="form-label"> @(Employee.Town == null ? "Select Town" : $"Selected Town: {Employee.Town.Name}") </label> *@
+												<SfDropDownList TValue="string" TItem="Town" Placeholder="Select Town" DataSource="Towns">
+													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+													<DropDownListEvents TValue="string" TItem="Town" ValueChange="OnTownValueChange"></DropDownListEvents>
+												</SfDropDownList>
+												<ValidationMessage For="() => EmployeeGroup2.TownId" class="text-danger" />
+											</div>
+											<div class="form-group mt-3">
+												<label class="form-label">Other</label>
+												<textarea @bind="EmployeeGroup2.Other" class="form-control" placeholder="Optional" />
+											</div>
+											<div class="form-group mt-4 mb-5">
+												<button class="btn btn-success float-end type="submit">
+													<i class="bi bi-save"></i>
+													Save
+												</button>
+											</div>
+										</div>
+									</div>
 									<div class="col-lg-2"></div>
 								</div>
 							</EditForm>
@@ -143,4 +179,103 @@
 			</div>
 		</div>	
 	}
+}
+
+<style>
+	.floatingDiv {
+	width: 500px;
+	background: #228ada;
+	height: 10px;
+	}
+
+	.floatingNumber {
+	border-radius: 50%;
+	color: white;
+	background: #1d1858;
+	width: 20px;
+	height: 20px;
+	}
+	.inactive-div {
+	width: 50px;
+	background: gray;
+	height: 10px;
+	}
+	.inactive-span {
+	border-radius: 50%;
+	color: white;
+	background: gray;
+	width: 20px;
+	height: 20px;
+	}
+	.format-border {
+	border-radius: 20px;
+	}
+</style>
+
+@code {
+	[Parameter] public List<Employee> Employees { get; set; } = new();
+
+	[Parameter] public bool ShowAddOrUpdateEmployee { get; set; }
+	[Parameter] public EmployeeGroup1 EmployeeGroup1 { get; set; } = new();
+	[Parameter] public EmployeeGroup2 EmployeeGroup2 { get; set; } = new();
+
+	[Parameter] public List<Country> Countries { get; set; } = new();
+	[Parameter] public List<City> Cities { get; set; } = new();
+	[Parameter] public List<Town> Towns { get; set; } = new();
+
+	[Parameter] public List<GeneralDepartment> GeneralDepartments { get; set; } = new();
+	[Parameter] public List<Department> Departments { get; set; } = new();
+	[Parameter] public List<Branch> Branches { get; set; } = new();
+
+	string FloatingNumber1 = "floatingNumber";
+	string Floatingdiv1 = "floatingDiv";
+
+	string FloatingNumber2 = "inactive-span";
+	string Floatingdiv2 = "inactive-div";
+
+	public bool FirstLayer { get; set; } = true;
+	public bool SecondLayer { get; set; } = false;
+
+	private void ShowLayer2()
+	{
+		FirstLayer = false;
+		SecondLayer = true;
+	}
+	private void PrevCilicked()
+	{
+		FirstLayer = true;
+		SecondLayer = false;
+	}
+
+	protected override void OnInitialized()
+	{
+		allState.Action += StateHasChanged;
+	}
+
+	[Parameter] public EventCallback NotifyParentFormCloseClicked { get; set; }
+	async Task Closeform()
+	{
+		ShowAddOrUpdateEmployee = false;
+		await NotifyParentFormCloseClicked.InvokeAsync();
+	}
+
+	// Counrty // City // Town 
+	[Parameter] public EventCallback<int> HandleCountrySelectedEvent { get; set; }
+	public void OnCountryValueChange(ChangeEventArgs<string, Country> args)
+	{
+		HandleCountrySelectedEvent.InvokeAsync(int.Parse(args.Value));
+	}
+
+	[Parameter] public EventCallback<int> HandleCitySelectedEvent { get; set; }
+	public void OnCityValueChange(ChangeEventArgs<string, City> args)
+	{
+		HandleCitySelectedEvent.InvokeAsync(int.Parse(args.Value));
+	}
+
+	public void OnTownValueChange(ChngeEnventArgs<string, Town> args)
+	{
+		EmployeeGroup2.TownId = int.Parse(args.Value);
+	}
+
+	public void Dispose() => allState.Action -= StateHasChanged;
 }

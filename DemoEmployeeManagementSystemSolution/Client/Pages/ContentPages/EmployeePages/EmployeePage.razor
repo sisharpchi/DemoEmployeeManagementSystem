@@ -1,0 +1,67 @@
+﻿@implements IDisposable
+@if (allState.ShowEmployee)
+{
+	if (ShowMainPage)
+	{
+		<div class="container-fluid mt-5">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header"><button class="btn btn-outline-success" @onclick="ShowAddOrUpdateEmployeeButtonClicked"><i class="bi bi-plus-circle-dotted"> Add Employee</i></button></div>
+						<div class="card-body">
+							<SfGrid DataSource="@Employees">
+								<GridColumns>
+									<GridColumn HeaderText="Employee Image">
+										<Template>
+											@{
+												var employee = (context as Employee);
+												<div class="image">
+													<img src="@employee!.Photo" alt="@employee.Name" width="150" height="150" />
+												</div>
+											}
+										</Template>
+									</GridColumn>
+									<GridColumn Field=@nameof(Employee.CivilId) HeaderText="Civil Id"></GridColumn>
+									<GridColumn Field=@nameof(Employee.FileNumber) HeaderText="File Number"></GridColumn>
+									<GridColumn Field=@nameof(Employee.Name) HeaderText="Name"></GridColumn>
+									<GridColumn Field=@nameof(Employee.TelephoneNumber) HeaderText="Telephone"></GridColumn>
+									<GridColumn Field=@nameof(Employee.JobName) HeaderText="Job Name"></GridColumn>
+									<GridColumn Field=@nameof(Employee.Branch.Name) HeaderText="Branch"></GridColumn>
+									<GridColumn Field=@nameof(Employee.Town.Name) HeaderText="Town"></GridColumn>
+								</GridColumns>
+							</SfGrid>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+
+<AddOrUpdateEmployeePage ShowAddOrUpdateEmployee="ShowAddOrUpdatePage" />
+@code {
+	public List<Employee> Employees { get; set; } = new();
+
+	protected async override Task OnInitializedAsync()
+	{
+		allState.Action += StateHasChanged;
+		// await LoadDefaults();
+		await LoadEmployees();
+	}
+
+	private async Task LoadEmployees()
+	{
+		Employees = await employeeService.GetAll(Constants.EmployeeBaseUrl);
+	}
+
+	public bool ShowMainPage { get; set; } = true;
+	public bool ShowAddOrUpdatePage { get; set; } = false;
+	private void ShowAddOrUpdateEmployeeButtonClicked()
+	{
+		ShowMainPage = false;
+		ShowAddOrUpdatePage = true;
+	}
+
+	public void Dispose() => allState.Action -= StateHasChanged;
+}
