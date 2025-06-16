@@ -272,10 +272,39 @@
 		HandleCitySelectedEvent.InvokeAsync(int.Parse(args.Value));
 	}
 
-	public void OnTownValueChange(ChngeEnventArgs<string, Town> args)
+	public void OnTownValueChange(ChangeEventArgs<string, Town> args)
 	{
 		EmployeeGroup2.TownId = int.Parse(args.Value);
 	}
+
+	// GeneralDepartment // Department // Branch
+	[Parameter] public EventCallback<int> HandleGeneralDepartmentSelectedEvent { get; set; }
+	public void OnGeneralDepartmentChange(ChangeEventArgs<string, GeneralDepartment> args)
+	{
+		HandleGeneralDepartmentSelectedEvent.InvokeAsync(int.Parse(args.Value));
+	}
+
+	[Parameter] public EventCallback<int> HandleDepartmentSelectedEvent { get; set; }
+	public void OnDepartmentChange(ChangeEventArgs<string, Department> args)
+	{
+		HandleDepartmentSelectedEvent.InvokeAsync(int.Parse(args.Value));
+	}
+
+	public void OnBranchChange(ChangeEventArgs<string, Branch> args)
+	{
+		EmployeeGroup2.BranchId = int.Parse(args.Value);
+	}
+
+	void Form1()
+	{
+
+	}
+
+	void Form2()
+	{
+		
+	}
+
 
 	public void Dispose() => allState.Action -= StateHasChanged;
 }
