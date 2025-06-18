@@ -8,7 +8,7 @@ using ServerLibrary.Data;
 
 #nullable disable
 
-namespace ServerLibrary.Data.Migrations
+namespace ServerLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -182,10 +182,6 @@ namespace ServerLibrary.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

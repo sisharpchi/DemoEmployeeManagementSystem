@@ -9,11 +9,11 @@ using ServerLibrary.Data;
 
 #nullable disable
 
-namespace ServerLibrary.Data.Migrations
+namespace ServerLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250611082809_InitialCreation")]
-    partial class InitialCreation
+    [Migration("20250617050605_InitialCreationUpdateEmployeeTable")]
+    partial class InitialCreationUpdateEmployeeTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,10 +185,6 @@ namespace ServerLibrary.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -5,8 +5,8 @@
 	{
 		<div class="container">
 			<div class="row mt-5">
-				<div class="col-lg-1 text-center"><i class="bi bi-x-lg fs-3 fw-bold text-danger" style="cursor:pointer;" @onclick="Closeform"></i></div>
-				<div class="col-lg-6 text-center"><h2>Add Employee</h2></div>
+				<div class="col-lg-1 text-center"><i class="bi bi-x-lg fs-3 fw-bold text-danger" style="cursor:pointer;" @onclick="CloseForm"></i></div>
+				<div class="col-lg-6 text-center"><h2>@Title Employee</h2></div>
 			</div>
 
 			<div class="row">
@@ -55,6 +55,9 @@
 												<InputText @bind-Value="EmployeeGroup1.Address" class="form-control" />
 												<ValidationMessage For="() => EmployeeGroup1.Address" class="text-danger" />
 											</div>
+											<div class="form-control mt-2" style="border: none;">
+												<img src="@EmployeeGroup1.Photo" width="100" height="100" />
+											</div>
 										</div>
 									</div>
 									<div class="col-lg-4 mt-2">
@@ -70,9 +73,11 @@
 												<InputText @bind-Value="EmployeeGroup1.FileNumber" class="form-control" />
 												<ValidationMessage For="() => EmployeeGroup1.FileNumber" class="text-danger" />
 											</div>
-											<div class="form-group mt-2">
-												<label class="form-label">Photo</label>
-												<InputText @bind-Value="EmployeeGroup1.Photo" class="form-control" />
+											<div class="form-group mt-3">
+												<label class="form-label @(ImageUploadMessage == ""?"" : "text-danger")">
+													@(ImageUploadMessage == "" ? "Upload Image" : ImageUploadMessage)
+												</label>
+												<InputFile OnChange="UploadImage" class="form-control"></InputFile>
 												<ValidationMessage For="() => EmployeeGroup1.Photo" class="text-danger" />
 											</div>
 											<div class="form-group mt-5">
@@ -103,23 +108,31 @@
 												<ValidationMessage For="() => EmployeeGroup2.JobName" class="text-danger" />
 											</div>
 											<div class="form-group mt-3">
-												<label class="form-label">  </label>
-												@* <label class="form-label">@(GeneralDepartmentName == "" ? "Select General Department" : $"Selected General Department: {GeneralDepartmentName}")</label> *@
-												<SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="Select General Department" DataSource="GeneralDepartments">
+												@{
+													string generalDepartment = GeneralDepartment.Equals("") ? "Select General Department" : GeneralDepartment;
+												}
+												<label class="form-label">Select General Department</label>
+												<SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="@generalDepartment" DataSource="GeneralDepartments">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="GeneralDepartment" ValueChange="OnGeneralDepartmentChange"></DropDownListEvents>
 												</SfDropDownList>
 											</div>
 											<div class="form-group mt-3">
-												@* <label class="form-label">@(DepartmentName == "" ? "Select Department" : $"Selected Department: {DepartmentName}")</label> *@
-												<SfDropDownList TValue="string" TItem="Department" Placeholder="Select Department" DataSource="Departments">
+												@{
+													string department = Department.Equals("") ? "Select Department" : Department;
+												}
+												<label class="form-label">Select Department</label>
+												<SfDropDownList TValue="string" TItem="Department" Placeholder="@department" DataSource="Departments">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="Department" ValueChange="OnDepartmentChange"></DropDownListEvents>
 												</SfDropDownList>
 											</div>
 											<div class="form-group mt-3">
-												@* <label class="form-label">@(Employee.Branch == "" ? "Select Branch" : $"Selected Branch: {Employee.Branch.Name}")</label> *@
-												<SfDropDownList TValue="string" TItem="Branch" Placeholder="Select Branch" DataSource="Branches">
+												@{
+													string branch = Branch.Equals("") ? "Select Branch" : Branch;
+												}
+												<label class="form-label">Select Branch</label>
+												<SfDropDownList TValue="string" TItem="Branch" Placeholder="@branch" DataSource="Branches">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="Branch" ValueChange="OnBranchChange"></DropDownListEvents>
 												</SfDropDownList>
@@ -137,22 +150,31 @@
 										<div class="card-title mb-5 fw-bold" style="font-family:Tahoma">Location Information</div>
 										<div class="card-body">
 											<div class="form-group">
-												@* <label class="form-label"> @(CountryName == "" ? "Select Country" : $"Selected Country: {CountryName}") </label> *@
-												<SfDropDownList TValue="string" TItem="Country" Placeholder="Select Country" DataSource="Countries">
+												@{
+													string country = Country.Equals("") ? "Select Country" : Country;
+												}
+												<label class="form-label">Select Country</label>
+												<SfDropDownList TValue="string" TItem="Country" Placeholder="@country" DataSource="Countries">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="Country" ValueChange="OnCountryValueChange"></DropDownListEvents>
 												</SfDropDownList>
 											</div>
 											<div class="form-group mt-3">
-												@* <label class="form-label"> @(CityName == "" ? "Select City" : $"Selected City: {CityName}") </label> *@
-												<SfDropDownList TValue="string" TItem="City" Placeholder="Select City" DataSource="Cities">
+												@{
+													string city = City.Equals("") ? "Select City" : City;
+												}
+												<label class="form-label">Select City</label>
+												<SfDropDownList TValue="string" TItem="City" Placeholder="@city" DataSource="Cities">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="City" ValueChange="OnCityValueChange"></DropDownListEvents>
 												</SfDropDownList>
 											</div>
 											<div class="form-group mt-3">
-												@* <label class="form-label"> @(Employee.Town == null ? "Select Town" : $"Selected Town: {Employee.Town.Name}") </label> *@
-												<SfDropDownList TValue="string" TItem="Town" Placeholder="Select Town" DataSource="Towns">
+												@{
+													string town = Town.Equals("") ? "Select Town" : Town;
+												}
+												<label class="form-label">Select Town</label>
+												<SfDropDownList TValue="string" TItem="Town" Placeholder="@town" DataSource="Towns">
 													<DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
 													<DropDownListEvents TValue="string" TItem="Town" ValueChange="OnTownValueChange"></DropDownListEvents>
 												</SfDropDownList>
@@ -213,7 +235,7 @@
 </style>
 
 @code {
-	[Parameter] public List<Employee> Employees { get; set; } = new();
+	[Parameter] public Employee Employee { get; set; } = new();
 
 	[Parameter] public bool ShowAddOrUpdateEmployee { get; set; }
 	[Parameter] public EmployeeGroup1 EmployeeGroup1 { get; set; } = new();
@@ -236,6 +258,14 @@
 	public bool FirstLayer { get; set; } = true;
 	public bool SecondLayer { get; set; } = false;
 
+	public string Title { get; set; } = "Add";
+	public string GeneralDepartment { get; set; } = "";
+	public string Department { get; set; } = "";
+	public string Branch { get; set; } = "";
+	public string Country { get; set; } = "";
+	public string City { get; set; } = "";
+	public string Town { get; set; } = "";
+
 	private void ShowLayer2()
 	{
 		FirstLayer = false;
@@ -247,64 +277,114 @@
 		SecondLayer = false;
 	}
 
-	protected override void OnInitialized()
-	{
-		allState.Action += StateHasChanged;
-	}
-
 	[Parameter] public EventCallback NotifyParentFormCloseClicked { get; set; }
-	async Task Closeform()
+	async Task CloseForm()
 	{
 		ShowAddOrUpdateEmployee = false;
 		await NotifyParentFormCloseClicked.InvokeAsync();
 	}
 
+	string ImageUploadMessage = "";
+	private async Task UploadImage(InputFileChangeEventArgs e)
+	{
+		if (e.File.Name.ToLower().Contains(".png"))
+		{
+			var format = "image/png";
+			var resizeImage = await e.File.RequestImageFileAsync(format, 300, 300);
+			var buffer = new byte[resizeImage.Size];
+			await resizeImage.OpenReadStream().ReadAsync(buffer);
+			var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+			ImageUploadMessage = "";
+			EmployeeGroup1.Photo = imageData;
+			imageData = "";
+			return;
+		}
+		ImageUploadMessage = "PNG file needed";
+		return;
+	}
+
+	private bool ValidateEmployeeGroup1()
+	{
+		if (string.IsNullOrEmpty(EmployeeGroup1.Name)
+		|| string.IsNullOrEmpty(EmployeeGroup1.TelephoneNumber)
+		|| string.IsNullOrEmpty(EmployeeGroup1.FileNumber)
+		|| string.IsNullOrEmpty(EmployeeGroup1.Address)
+		|| string.IsNullOrEmpty(EmployeeGroup1.Photo)
+		|| string.IsNullOrEmpty(EmployeeGroup1.CivilId))
+			return false;
+		else
+			return true;
+	}
+
+	private bool ValidateEmployeeGroup2()
+	{
+		if (string.IsNullOrEmpty(EmployeeGroup2.JobName)
+		|| EmployeeGroup2.TownId == 0
+		|| EmployeeGroup2.BranchId == 0)
+			return false;
+		else
+			return true;
+	}
+
+	[Parameter] public EventCallback<Employee> HandleSaveEmployeeClickedEvent { get; set; }
+	private void Form1()
+	{
+		var isValid = ValidateEmployeeGroup1();
+		if (isValid)
+		{
+			Employee.Name = EmployeeGroup1.Name;
+			Employee.TelephoneNumber = EmployeeGroup1.TelephoneNumber;
+			Employee.Address = EmployeeGroup1.Address;
+			Employee.CivilId = EmployeeGroup1.CivilId;
+			Employee.Photo = EmployeeGroup1.Photo;
+			Employee.FileNumber = EmployeeGroup1.FileNumber;
+			ShowLayer2();
+		}
+	}
+	private async Task Form2()
+	{
+		var isValid = ValidateEmployeeGroup2();
+		if (isValid)
+		{
+			Employee.JobName = EmployeeGroup2.JobName;
+			Employee.Other = EmployeeGroup2.Other;
+			Employee.BranchId = EmployeeGroup2.BranchId;
+			Employee.TownId = EmployeeGroup2.TownId;
+
+			await HandleSaveEmployeeClickedEvent.InvokeAsync(Employee);
+		}
+	}
+
+	public void ClearContent()
+	{
+		EmployeeGroup1 = new();
+		EmployeeGroup2 = new();
+		Employee = new();
+		StateHasChanged();
+	}
+
+	protected override void OnInitialized()
+	{
+		allState.Action += StateHasChanged;
+	}
+
 	// Counrty // City // Town 
 	[Parameter] public EventCallback<int> HandleCountrySelectedEvent { get; set; }
-	public void OnCountryValueChange(ChangeEventArgs<string, Country> args)
-	{
-		HandleCountrySelectedEvent.InvokeAsync(int.Parse(args.Value));
-	}
+	public void OnCountryValueChange(ChangeEventArgs<string, Country> args) => HandleCountrySelectedEvent.InvokeAsync(int.Parse(args.Value));
 
 	[Parameter] public EventCallback<int> HandleCitySelectedEvent { get; set; }
-	public void OnCityValueChange(ChangeEventArgs<string, City> args)
-	{
-		HandleCitySelectedEvent.InvokeAsync(int.Parse(args.Value));
-	}
+	public void OnCityValueChange(ChangeEventArgs<string, City> args) => HandleCitySelectedEvent.InvokeAsync(int.Parse(args.Value));
 
-	public void OnTownValueChange(ChangeEventArgs<string, Town> args)
-	{
-		EmployeeGroup2.TownId = int.Parse(args.Value);
-	}
+	public void OnTownValueChange(ChangeEventArgs<string, Town> args) => EmployeeGroup2.TownId = int.Parse(args.Value);
 
 	// GeneralDepartment // Department // Branch
 	[Parameter] public EventCallback<int> HandleGeneralDepartmentSelectedEvent { get; set; }
-	public void OnGeneralDepartmentChange(ChangeEventArgs<string, GeneralDepartment> args)
-	{
-		HandleGeneralDepartmentSelectedEvent.InvokeAsync(int.Parse(args.Value));
-	}
+	public void OnGeneralDepartmentChange(ChangeEventArgs<string, GeneralDepartment> args) => HandleGeneralDepartmentSelectedEvent.InvokeAsync(int.Parse(args.Value));
 
 	[Parameter] public EventCallback<int> HandleDepartmentSelectedEvent { get; set; }
-	public void OnDepartmentChange(ChangeEventArgs<string, Department> args)
-	{
-		HandleDepartmentSelectedEvent.InvokeAsync(int.Parse(args.Value));
-	}
+	public void OnDepartmentChange(ChangeEventArgs<string, Department> args) => HandleDepartmentSelectedEvent.InvokeAsync(int.Parse(args.Value));
 
-	public void OnBranchChange(ChangeEventArgs<string, Branch> args)
-	{
-		EmployeeGroup2.BranchId = int.Parse(args.Value);
-	}
-
-	void Form1()
-	{
-
-	}
-
-	void Form2()
-	{
-		
-	}
-
+	public void OnBranchChange(ChangeEventArgs<string, Branch> args) => EmployeeGroup2.BranchId = int.Parse(args.Value);
 
 	public void Dispose() => allState.Action -= StateHasChanged;
 }

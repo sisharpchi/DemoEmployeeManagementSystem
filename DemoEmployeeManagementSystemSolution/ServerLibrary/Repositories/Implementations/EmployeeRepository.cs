@@ -30,7 +30,7 @@ public class EmployeeRepository(AppDbContext appDbContext) : IGenericRepositoryI
             .ThenInclude(gd => gd.GeneralDepartment)
             .ToListAsync();
 
-        return employees;
+        return employees!;
     }
 
     public async Task<Employee> GetById(int id)

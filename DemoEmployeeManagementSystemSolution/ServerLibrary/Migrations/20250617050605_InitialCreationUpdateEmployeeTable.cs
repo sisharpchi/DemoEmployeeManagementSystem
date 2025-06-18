@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ServerLibrary.Data.Migrations
+namespace ServerLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class InitialCreationUpdateEmployeeTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -310,7 +310,6 @@ namespace ServerLibrary.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CivilId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     JobName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TelephoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
