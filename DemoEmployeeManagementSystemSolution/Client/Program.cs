@@ -14,6 +14,9 @@ using Syncfusion.Licensing;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+SyncfusionLicenseProvider.RegisterLicense("MzkxNDAwNEAzMjMzMmUzMDJlMzBUaTlUTldYT045TThHbmNkbUxtMUdnR1VxYnkxWXBMNHpxaVdqRHVXQnQ0PQ==");
+
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
@@ -47,9 +50,7 @@ builder.Services.AddScoped<IGenericServiceInterface<Employee>, GenericSeriveImpl
 
 builder.Services.AddScoped<AllState>();
 
-//SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NNaF1cWWhPYVJ1WmFZfVtgdVdMZFlbRnBPIiBoS35Rc0VlWXlfcnBQRGZZUER3VEBU");
 builder.Services.AddSyncfusionBlazor();
 builder.Services.AddScoped<SfDialogService>();
-
 
 await builder.Build().RunAsync();

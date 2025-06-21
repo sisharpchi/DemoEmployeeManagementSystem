@@ -18,11 +18,14 @@
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.Grids;
+@using Syncfusion.Blazor.Navigations
 @using Client.Pages.ContentPages.UserPages
 @using Client.Pages.ContentPages.EmployeePages
 @using Client.Pages.ContentPages.LocationPages
 @using Client.Pages.ContentPages.DepartmentPages
 @using Client.Pages.OtherPages
+
+@using Client.Pages.OtherPages.DoctorPages
 
 @inject AuthenticationStateProvider AuthStateProvider
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -46,6 +49,17 @@
 @inject IGenericServiceInterface<Country> countryService
 @inject IGenericServiceInterface<City> cityService
 @inject IGenericServiceInterface<Town> townService
+
+@inject IGenericServiceInterface<Overtime> overtimeService
+@inject IGenericServiceInterface<OvertimeType> overtimeTypeService
+
+@inject IGenericServiceInterface<Vacation> vacationService
+@inject IGenericServiceInterface<VacationType> vacationTypeService
+
+@inject IGenericServiceInterface<Sanciton> sanctionService
+@inject IGenericServiceInterface<SancitonType> sanctionTypeService
+
+@inject IGenericServiceInterface<Doctor> doctorService
 
 @* //Employee *@
 @inject IGenericServiceInterface<Employee> employeeService

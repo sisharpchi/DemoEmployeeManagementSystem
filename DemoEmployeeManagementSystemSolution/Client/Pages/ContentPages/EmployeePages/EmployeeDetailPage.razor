@@ -1,0 +1,92 @@
+﻿@if (ShowDetailsPage)
+{
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card border-success shadow-lg">
+					<div class="card-header">@EmployeeDetails.Name Details</div>
+					<div class="card-body">
+						<div class="hstack gap-2">
+							<div class="vstack gap-3">
+								<img src="@EmployeeDetails.Photo" class="card-img-top border-warning shadow-sm" style="width:100px; height:100px; border-radius: 50%;" />
+								<table class="table border-danger">
+									<tbody>
+										<tr>
+											<td><h6 class="fw-bold">Name:</h6></td>
+											<td>@EmployeeDetails.Name</td>
+										</tr>
+										<tr>
+											<td><h6 class="fw-bold">Job Title:</h6></td>
+											<td>@EmployeeDetails.JobName</td>
+										</tr>
+										<tr>
+											<td><h6 class="fw-bold">Telephone:</h6></td>
+											<td>@EmployeeDetails.TelephoneNumber</td>
+										</tr>
+										<tr>
+											<td><h6 class="fw-bold">Address:</h6></td>
+											<td>@EmployeeDetails.Address</td>
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+							<table class="table border-primary">
+								<tbody>
+									<tr>
+										<td colspan="2" class="text-center"><h6 class="fw-bold">Department Information:</h6></td>
+									</tr>
+									<tr>
+										<td><h6 class="fw-bold">General Department:</h6></td>
+										<td>@EmployeeDetails.Branch.Department.GeneralDepartment.Name</td>
+									</tr>
+									<tr>
+										<td><h6 class="fw-bold">Department:</h6></td>
+										<td>@EmployeeDetails.Branch.Department.Name</td>
+									</tr>
+									<tr>
+										<td><h6 class="fw-bold">Branch:</h6></td>
+										<td>@EmployeeDetails.Branch.Name</td>
+									</tr>
+
+								</tbody>
+							</table>
+							<table class="table border-success">
+								<tbody>
+									<tr>
+										<td colspan="2" class="text-center"><h6 class="fw-bold">Location Information:</h6></td>
+									</tr>
+									<tr>
+										<td><h6 class="fw-bold">Country:</h6></td>
+										<td>@EmployeeDetails.Town.City.Country.Name</td>
+									</tr>
+									<tr>
+										<td><h6 class="fw-bold">City:</h6></td>
+										<td>@EmployeeDetails.Town.City.Name</td>
+									</tr>
+									<tr>
+										<td><h6 class="fw-bold">Town:</h6></td>
+										<td>@EmployeeDetails.Town.Name</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-footer">
+						<button class="btn btn-danger" @onclick="DetailsPageCloseBtnClicked">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+
+@code {
+	[Parameter] public bool ShowDetailsPage { get; set; }
+	[Parameter] public Employee EmployeeDetails { get; set; } = new();
+	[Parameter] public EventCallback HandleDetailsPageCloseBtnClicked { get; set; }
+
+	async Task DetailsPageCloseBtnClicked() => await HandleDetailsPageCloseBtnClicked.InvokeAsync();
+}

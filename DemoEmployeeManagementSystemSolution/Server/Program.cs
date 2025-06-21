@@ -54,6 +54,17 @@ builder.Services.AddScoped<IGenericRepositoryInterface<Country>, CountryReposito
 builder.Services.AddScoped<IGenericRepositoryInterface<City>, CityRepository>();
 builder.Services.AddScoped<IGenericRepositoryInterface<Town>, TownRepository>();
 
+builder.Services.AddScoped<IGenericRepositoryInterface<Overtime>, OvertimeRepository>();
+builder.Services.AddScoped<IGenericRepositoryInterface<OvertimeType>, OvertimeTypeRepository>();
+
+builder.Services.AddScoped<IGenericRepositoryInterface<Sanciton>, SanctionRepository>();
+builder.Services.AddScoped<IGenericRepositoryInterface<SancitonType>, SanctionTypeRepository>();
+
+builder.Services.AddScoped<IGenericRepositoryInterface<Vacation>, VacationRepository>();
+builder.Services.AddScoped<IGenericRepositoryInterface<VacationType>, VacationTypeRepository>();
+
+builder.Services.AddScoped<IGenericRepositoryInterface<Doctor>, DoctorRepository>();
+
 builder.Services.AddScoped<IGenericRepositoryInterface<Employee>, EmployeeRepository>();
 
 builder.Services.AddCors(options =>

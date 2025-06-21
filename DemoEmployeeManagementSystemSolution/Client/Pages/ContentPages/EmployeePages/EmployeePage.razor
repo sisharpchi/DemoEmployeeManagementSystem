@@ -48,7 +48,7 @@
 
 <style>
 	#cursorStyle {
-		cursor: pointer;
+	cursor: pointer;
 	}
 </style>
 
@@ -68,6 +68,22 @@ HandleGeneralDepartmentSelectedEvent="HandleGeneralDepartmentSelectedEvent"
 HandleDepartmentSelectedEvent="HandleDepartmentSelectedEvent"
 HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent">
 </AddOrUpdateEmployeePage>
+
+<EmployeeDetailPage EmployeeDetails="Employee"
+ShowDetailsPage="ShowDetailsPage"
+HandleDetailsPageCloseBtnClicked="HandleDetailsPageCloseBtnClicked" />
+
+
+<ContextMenu @ref="contextMenu" HandleDeleteClicked="DeleteClicked"
+HandleEditClicked="EditClicked" 
+HandleViewClicked="ViewClicked" 
+HandleAddHealthClicked="AddHealthClicked" 
+HandleAddOvertimeClicked="AddOvertimeClicked"
+HandleAddSanctionClicked="AddSanctionClicked"
+HandleAddVacationClicked="AddVacationClicked" />
+
+
+<DoctorDialog @ref="doctorDialog" Doctor="Doctor" HandleSaveOperationEvent="SaveHealthEvent" />
 
 @code {
 	AddOrUpdateEmployeePage? addOrUpdateEmployee;
@@ -118,6 +134,7 @@ HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent">
 		ShowMainPage = true;
 		ShowAddOrUpdatePage = false;
 		await LoadEmployees();
+		SelectedEmployee = new();
 	}
 
 	private async Task LoadEmployees() => Employees = await employeeService.GetAll(Constants.EmployeeBaseUrl);
@@ -147,11 +164,93 @@ HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent">
 		ShowAddOrUpdatePage = true;
 	}
 
+	ContextMenu? contextMenu;
 	public Employee SelectedEmployee { get; set; } = new();
 	void ShowMenuPopUp(Employee employee)
 	{
 		SelectedEmployee = employee;
 		contextMenu!.OpenContextMenu();
+	}
+
+	void EditClicked()
+	{
+		addOrUpdateEmployee!.Employee.Id = SelectedEmployee.Id;
+		addOrUpdateEmployee!.EmployeeGroup1.Name = SelectedEmployee.Name;
+		addOrUpdateEmployee!.EmployeeGroup1.TelephoneNumber = SelectedEmployee.TelephoneNumber;
+		addOrUpdateEmployee!.EmployeeGroup1.FileNumber = SelectedEmployee.FileNumber;
+		addOrUpdateEmployee!.EmployeeGroup1.Address = SelectedEmployee.Address;
+		addOrUpdateEmployee!.EmployeeGroup1.Photo = SelectedEmployee.Photo;
+		addOrUpdateEmployee!.EmployeeGroup1.CivilId = SelectedEmployee.CivilId;
+
+		addOrUpdateEmployee!.EmployeeGroup2.JobName = SelectedEmployee.JobName;
+		addOrUpdateEmployee!.EmployeeGroup2.Other = SelectedEmployee.Other;
+
+		addOrUpdateEmployee!.GeneralDepartment = SelectedEmployee.Branch!.Department!.GeneralDepartment!.Name;
+		addOrUpdateEmployee!.Department = SelectedEmployee.Branch!.Department!.Name;
+		addOrUpdateEmployee!.Branch = SelectedEmployee.Branch!.Name;
+
+		addOrUpdateEmployee!.Country = SelectedEmployee.Town!.City!.Country!.Name;
+		addOrUpdateEmployee!.City = SelectedEmployee.Town!.City!.Name;
+		addOrUpdateEmployee!.Town = SelectedEmployee.Town!.Name;
+
+		addOrUpdateEmployee.Title = "Update";
+		SelectedEmployee = new();
+		contextMenu!.CloseContextMenu();
+		ShowAddOrUpdatePage = true;
+		ShowMainPage = false;
+	}
+
+	private async Task DeleteClicked()
+	{
+		contextMenu.CloseContextMenu();
+		bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {SelectedEmployee.Name}", "Confirm Delete");
+		if (!confirm) return;
+
+		var response = await branchService.DeleteById(SelectedEmployee.Id, Constants.EmployeeBaseUrl);
+		var result = await DisplayMessage(response.Flag, response.Massage);
+		if (result)
+		{
+			SelectedEmployee = new();
+			await LoadEmployees();
+		}
+	}
+
+	public bool ShowDetailsPage { get; set; } = false;
+	private void ViewClicked()
+	{
+		Employee = SelectedEmployee;
+		contextMenu!.CloseContextMenu();
+		ShowDetailsPage = true;
+		ShowMainPage = false;
+		SelectedEmployee = new();
+	}
+
+	DoctorDialog? doctorDialog;
+	Doctor Doctor = new();
+	private void AddHealthClicked()
+	{
+		Doctor.EmployeeId = SelectedEmployee.Id;
+		contextMenu!.CloseContextMenu();
+		doctorDialog!.OpenDialog();
+	}
+
+	async Task SaveHealthEvent(Doctor item)
+	{
+		item.EmployeeId = SelectedEmployee.Id;
+		var (flag, message) = await doctorService.Insert(item, Constants.DoctorBaseUrl);
+		var response = await DisplayMessage(flag, message);
+		if (response)
+		{
+			SelectedEmployee = new();
+			Doctor = new();
+			doctorDialog!.CloseDialog();
+		}
+	}
+
+	void HandleDetailsPageCloseBtnClicked()
+	{
+		ShowDetailsPage = false;
+		ShowMainPage = true;
 	}
 
 	private async Task<bool> DisplayMessage(bool flag, string message)

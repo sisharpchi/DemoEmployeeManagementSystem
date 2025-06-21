@@ -6,5 +6,5 @@ public class VacationType : BaseEntity
 {
     // Many to one relationship with Vacation
     [JsonIgnore]
-    public List<Vacation>? Vacations { get; set; }
+    public List<Sanciton>? Vacations { get; set; }
 }

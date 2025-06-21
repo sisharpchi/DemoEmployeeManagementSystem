@@ -1,8 +1,9 @@
 ﻿<SfDialog Width="100px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
 	<DialogEvents OnOpen="OpenContextMenu"></DialogEvents>
 	<DialogTemplates>
-		<Header> Managment Menu </Header>
+		<Header> Employee Menu </Header>
 		<Content>
+			<hr />
 			<div class="hstack gap-2 mb-2" id="cursorStyle" @onclick="ViewClicked">
 				<i class="bi bi-eye text-info"></i>
 				<span id="cursorStyle" class="text-info"> View </span>
@@ -15,6 +16,7 @@
 				<i class="bi bi-trash text-danger"></i>
 				<span id="cursorStyle" class="text-danger"> Delete </span>
 			</div>
+			<hr />
 			<div class="hstack gap-2 mb-2" id="cursorStyle" @onclick="AddVacationClicked">
 				<i class="bi bi-backpack3 text-success"></i>
 				<span id="cursorStyle" class="text-success"> Add Vacation </span>
