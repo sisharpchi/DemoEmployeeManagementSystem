@@ -14,9 +14,23 @@
 							<GridPageSettings PageSize="5"></GridPageSettings>
 							<GridEvents OnToolbarClick="ToolbarClickedHandler" TValue="Doctor"></GridEvents>
 							<GridColumns>
-								<GridColumn Field="@nameof(Doctor.EmployeeId)"></GridColumn>
+								<GridColumn Field="@nameof(Doctor.EmployeeId)" HeaderText="ID"></GridColumn>
+								<GridColumn Field="@nameof(Doctor.MedicalDiagnose)" HeaderText="Medical Diagnose"></GridColumn>
+								<GridColumn Field="@nameof(Doctor.MedicalRecommendation)" HeaderText="Medical Recommendation"></GridColumn>
+								<GridColumn Field="@nameof(Doctor.Date)" HeaderText="Date"></GridColumn>
+								<GridColumn HeaderText="Action">
+									<Template>
+										@{
+											var employee = (context as Doctor);
+											<div>
+												<i class="bi bi-pencil text-info" id="cursorSytle" @onclick="()=>EditClicked(employee!)"></i>
+												<i class="bi bi-trash text-danger" id="cursorSytle" @onclick="()=>DeleteClicked(employee!)"></i>
+											</div>
+										}
+									</Template>
+								</GridColumn>
 							</GridColumns>
-						</SfGri>
+						</SfGrid>
 					</div>
 				</div>
 			</div>

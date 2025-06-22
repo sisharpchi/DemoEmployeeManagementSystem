@@ -77,8 +77,8 @@ HandleDetailsPageCloseBtnClicked="HandleDetailsPageCloseBtnClicked" />
 <ContextMenu @ref="contextMenu" HandleDeleteClicked="DeleteClicked"
 HandleEditClicked="EditClicked" 
 HandleViewClicked="ViewClicked" 
-HandleAddHealthClicked="AddHealthClicked" 
-HandleAddOvertimeClicked="AddOvertimeClicked"
+HandleAddHealthClicked="AddHealthClicked"
+HandleAddOvertimeClicked="AddOvertimeClicked" 
 HandleAddSanctionClicked="AddSanctionClicked"
 HandleAddVacationClicked="AddVacationClicked" />
 
@@ -245,6 +245,30 @@ HandleAddVacationClicked="AddVacationClicked" />
 			Doctor = new();
 			doctorDialog!.CloseDialog();
 		}
+	}
+
+	OvertimeDialog? overtimeDialog;
+	Overtime Overtime = new();
+	List<OvertimeType> OvertimeTypes = [];
+	private void AddOvertimeClicked()
+	{
+		Overtime.EmployeeId = SelectedEmployee.Id;
+		contextMenu.CloseContextMenu();
+		overtimeDialog!.OpenDialog();
+	}
+
+	private void AddSanctionClicked()
+	{
+		Sanciton.EmployeeId = SelectedEmployee.Id;
+		contextMenu!.CloseContextMenu();
+		sanctionDialog!.OpenDialog();
+	}
+
+	private void AddVacationClicked()
+	{
+		Vacation.EmployeeId = SelectedEmployee.Id;
+		contextMenu!.CloseContextMenu();
+		vacationDialog!.OpenDialog();
 	}
 
 	void HandleDetailsPageCloseBtnClicked()

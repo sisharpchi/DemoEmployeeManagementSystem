@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Pages\AdministrationPages\" />
+    <Folder Include="Pages\OtherPages\OvertimePages\" />
     <Folder Include="wwwroot\images\background\" />
     <Folder Include="wwwroot\images\companylogos\" />
     <Folder Include="wwwroot\images\Profile\" />
