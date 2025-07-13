@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using ServerLibrary.Data;
 using ServerLibrary.Helpers;
 using ServerLibrary.Repositories.Contracts;
@@ -78,15 +77,6 @@ builder.Services.AddCors(options =>
 
 });
 
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Employee Management System API",
-        Version = "v1"
-    });
-});
-
 var app = builder.Build();
 
 
@@ -94,13 +84,10 @@ var app = builder.Build();
 //app.MapScalarApiReference();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || true)
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee Management System API v1");
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
