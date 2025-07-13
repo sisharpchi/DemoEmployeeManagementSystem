@@ -36,6 +36,9 @@ jobs:
       - name: Test
         run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build --verbosity normal
       
+      - name: Create publish folder
+        run: mkdir -p ${{ env.PUBLISH_DIR }}
+
       - name: Publish
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --property:PublishDir=${{ env.PUBLISH_DIR }}
 
