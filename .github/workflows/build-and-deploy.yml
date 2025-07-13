@@ -8,11 +8,11 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: EmployeeSystem
-  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
+  AZURE_WEBAPP_PACKAGE_PATH: "./DemoEmployeeManagementSystemSolution/publish"
   DOTNET_VERSION: "8.x"
   SOLUTION_PATH: "./DemoEmployeeManagementSystemSolution/DemoEmployeeManagementSystemSolution.sln"
   API_PROJECT_PATH: "./DemoEmployeeManagementSystemSolution/Server"
-  PUBLISH_DIR: "./publish"
+  PUBLISH_DIR: "./DemoEmployeeManagementSystemSolution/publish"
 
 jobs:
   build-and-test:
