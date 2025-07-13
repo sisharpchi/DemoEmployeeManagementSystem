@@ -13,4 +13,6 @@ public class Sanciton : OtherBaseEntity
 
     //Many to one relationship with Vacation Type
     public SancitonType? SancitonType { get; set; }
+    [Required]
+    public int SanctionTypeId { get; set; }
 }

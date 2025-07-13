@@ -1,0 +1,43 @@
+﻿<SfDialog Width="350px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+	<DialogEvents OnOpen="OpenDialog"></DialogEvents>
+	<DialogTemplates>
+		<Header> @Title Overtime Type </Header>
+		<Content>
+			<EditForm Model="OvertimeType" Enhance OnSubmit="Save">
+				<div class="card border-success">
+					<div class="card-body">
+						<div class="form-group">
+							<label class="form-label">Name</label>
+							<InputText @bind-Value="OvertimeType.Name" class="form-control" />
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</Content>
+	</DialogTemplates>
+
+	<DialogButtons>
+		<DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save" />
+	</DialogButtons>
+</SfDialog>
+
+@code {
+	[Parameter] public OvertimeType OvertimeType { get; set; } = new();
+	[Parameter] public EventCallback<OvertimeType> HandleSaveOperationEvent { get; set; }
+	private bool IsVisible { get; set; } = false;
+	public string Title { get; set; } = "Add";
+	public void OpenDialog()
+	{
+		IsVisible = true;
+		StateHasChanged();
+	}
+	async void Save()
+	{
+		if (string.IsNullOrEmpty(OvertimeType.Name))
+			await dialogService.AlertAsync("You need to provide OvetimeTpye name.", "Alert!");
+		else
+			await HandleSaveOperationEvent.InvokeAsync(OvertimeType);
+	}
+
+	public void ChangeTitle(string title) => Title = title;
+}

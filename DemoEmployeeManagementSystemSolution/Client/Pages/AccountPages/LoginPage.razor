@@ -1,53 +1,196 @@
 ﻿@page "/identity/account/login"
 @layout AuthenticationLayout
 
-<div class="container">
-	<div class="row justify-content-center align-items-center" style="min-height: 100vh;">
-		<div class="col-md-6 col-lg-4">
-			<EditForm Model="User" OnValidSubmit="HandleLogin">
-				<DataAnnotationsValidator />
-
-				<div class="card shadow-lg bg-dark text-white" style="border-radius: 15px; opacity: 0.9;">
-					<div class="card-header text-center fs-4 fw-bold">
-						Login
-					</div>
-
-					<div class="card-body">
-
-						<div class="form-group mb-3">
-							<label>Email</label>
-							<InputText @bind-Value="User.Email" class="form-control" placeholder="Enter your email" />
-						</div>
-						
-						<div class="form-group mb-4">
-							<label>Password</label>
-							<InputText @bind-Value="User.Password" type="password" class="form-control" placeholder="Enter your password" />
-						</div>
-
-						<div class="d-grid">
-							@if (ShowLoadingButton)
-							{
-								<ButtonLoadingSpinner></ButtonLoadingSpinner>
-							}
-							else
-							{
-								<button type="submit" class="btn btn-primary">Login</button>
-							}
-						</div>
-					</div>
-
-					<div class="card-footer">
-						<div class="text-center">
-							Don't have an account? <br> 
-							<a href="identity/account/register" class="btn-link">Sign Up</a>
-						</div>
-						<ValidationSummary />
-					</div>
-				</div>
-			</EditForm>
-		</div>
-	</div>
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center p-3">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
+        <EditForm Model="User" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+            
+            <div class="card login-container shadow-lg">
+                <div class="card-header login-header text-center py-3">
+                    <h3 class="mb-0">Login</h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText @bind-Value="User.Email" 
+                                   class="form-control" 
+                                   placeholder="Enter your email" />
+                        <ValidationMessage For="@(() => User.Email)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Password</label>
+                        <InputText @bind-Value="User.Password" 
+                                   type="password" 
+                                   class="form-control" 
+                                   placeholder="Enter your password" />
+                        <ValidationMessage For="@(() => User.Password)" class="text-danger" />
+                    </div>
+                    
+                    <div class="d-grid">
+                        @if (ShowLoadingButton)
+                        {
+                            <button type="button" class="btn loading-btn" disabled>
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                Loading...
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary">
+                                Login
+                            </button>
+                        }
+                    </div>
+                </div>
+                
+                <div class="card-footer py-3">
+                    <p class="mb-2">Don't have an account?</p>
+                    <a href="identity/account/register" class="btn-link">Sign Up</a>
+                    <ValidationSummary class="validation-summary" />
+                </div>
+            </div>
+        </EditForm>
+    </div>
 </div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        font-weight: 300;
+        letter-spacing: 1px;
+        color: #333;
+    }
+
+    .form-control {
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: rgba(255, 255, 255, 1);
+    }
+
+    .form-label {
+        color: #555;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+    .loading-btn {
+        background: #ccc;
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        color: white;
+        width: 100%;
+    }
+
+    .spinner-border-sm {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .card-footer {
+        background: transparent;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+        .card-footer p {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+    .btn-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+    .validation-summary {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 15px;
+        color: #dc3545;
+        font-size: 14px;
+    }
+
+    .text-danger {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    @@media (max-width: 480px) {
+        .login-container
+        {
+            margin: 15px;
+        }
+
+        .card-header {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 
 @code {
 	public bool ShowLoadingButton { get; set; } = false;

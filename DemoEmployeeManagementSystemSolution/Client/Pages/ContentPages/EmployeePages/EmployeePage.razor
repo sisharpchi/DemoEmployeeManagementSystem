@@ -9,7 +9,10 @@
 					<div class="card">
 						<div class="card-header"><button class="btn btn-outline-success" @onclick="ShowAddOrUpdateEmployeeButtonClicked"><i class="bi bi-plus-circle-dotted"> Add Employee</i></button></div>
 						<div class="card-body">
-							<SfGrid DataSource="@Employees">
+							@{
+								var Tool = (new List<string>() { "Search", "ExcelExport", "PdfExport", "Print" });
+							}
+							<SfGrid DataSource="@Employees" AllowSorting="true" AllowPaging="true" Toolbar=@Tool AllowExcelExport="true" @ref="DefaultGrid" AllowPdfExport="true">
 								<GridColumns>
 									<GridColumn HeaderText="Employee Image">
 										<Template>
@@ -73,7 +76,6 @@ HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent">
 ShowDetailsPage="ShowDetailsPage"
 HandleDetailsPageCloseBtnClicked="HandleDetailsPageCloseBtnClicked" />
 
-
 <ContextMenu @ref="contextMenu" HandleDeleteClicked="DeleteClicked"
 HandleEditClicked="EditClicked" 
 HandleViewClicked="ViewClicked" 
@@ -82,10 +84,19 @@ HandleAddOvertimeClicked="AddOvertimeClicked"
 HandleAddSanctionClicked="AddSanctionClicked"
 HandleAddVacationClicked="AddVacationClicked" />
 
-
 <DoctorDialog @ref="doctorDialog" Doctor="Doctor" HandleSaveOperationEvent="SaveHealthEvent" />
 
+<OvertimeDialog @ref="overtimeDialog" ItemModel="Overtime" OvertimeTypes="OvertimeTypes"
+HandleSaveOperationEvent="SaveOvertimeEvent"/>
+
+<SanctionDialog @ref="sancitonDialog" ItemModel="Sanciton" SanctionTypes="SancitonTypes"
+HandleSaveOperationEvent="SaveSanctionEvent" />
+
+<VacationDialog @ref="vacationDialog" ItemModel="Vacation"
+VacationTypes="VacationTypes" HandleSaveOperationEvent="SaveVacationEvent" />
+
 @code {
+	private SfGrid<Employee>? DefaultGrid;
 	AddOrUpdateEmployeePage? addOrUpdateEmployee;
 	public List<Employee> Employees { get; set; } = [];
 	public Employee Employee { get; set; } = new();
@@ -108,6 +119,9 @@ HandleAddVacationClicked="AddVacationClicked" />
 		allState.Action += StateHasChanged;
 		await LoadEmployees();
 		await LoadDefaults();
+		await GetOvertimeTypes();
+		await GetSanctionTypes();
+		await GetVacationTypes();
 	}
 
 	private async Task LoadDefaults()
@@ -225,6 +239,15 @@ HandleAddVacationClicked="AddVacationClicked" />
 		SelectedEmployee = new();
 	}
 
+	
+	private async Task GetOvertimeTypes() =>
+	OvertimeTypes = await overtimeTypeService.GetAll(Constants.OvertimeTypeBaseUrl);
+	private async Task GetSanctionTypes() =>
+	SancitonTypes = await sanctionTypeService.GetAll(Constants.SanctionTypeBaseUrl);
+	private async Task GetVacationTypes() =>
+	VacationTypes = await vacationTypeService.GetAll(Constants.VacationTypeBaseUrl);
+
+
 	DoctorDialog? doctorDialog;
 	Doctor Doctor = new();
 	private void AddHealthClicked()
@@ -257,18 +280,65 @@ HandleAddVacationClicked="AddVacationClicked" />
 		overtimeDialog!.OpenDialog();
 	}
 
+	async Task SaveOvertimeEvent(Overtime item)
+	{
+		item.EmployeeId = SelectedEmployee.Id;
+		var (flag, message) = await overtimeService.Insert(item, Constants.OvertimeBaseUrl);
+		var response = await DisplayMessage(flag, message);
+		if (response)
+		{
+			SelectedEmployee = new();
+			Overtime = new();
+			overtimeDialog!.OpenDialog();
+		}
+	}
+
+	SanctionDialog? sancitonDialog;
+	Sanciton Sanciton = new();
+	List<SancitonType> SancitonTypes = [];
 	private void AddSanctionClicked()
 	{
 		Sanciton.EmployeeId = SelectedEmployee.Id;
 		contextMenu!.CloseContextMenu();
-		sanctionDialog!.OpenDialog();
+		sancitonDialog!.OpenDialog();
 	}
 
+	//Save Sanction Handler
+	async Task SaveSanctionEvent(Sanciton item)
+	{
+		item.EmployeeId = SelectedEmployee.Id;
+		var (flag, message) = await sanctionService.Insert(item, Constants.SanctionBaseUrl);
+		var response = await DisplayMessage(flag, message);
+		if (response)
+		{
+			SelectedEmployee = new();
+			Sanciton = new();
+			sancitonDialog!.CloseDialog();
+		}
+	}
+
+	VacationDialog? vacationDialog;
+	Vacation Vacation = new();
+	List<VacationType> VacationTypes = [];
 	private void AddVacationClicked()
 	{
 		Vacation.EmployeeId = SelectedEmployee.Id;
 		contextMenu!.CloseContextMenu();
 		vacationDialog!.OpenDialog();
+	}
+
+	//Save Vacation Handler
+	async Task SaveVacationEvent(Vacation item)
+	{
+		item.EmployeeId = SelectedEmployee.Id;
+		var (flag, message) = await vacationService.Insert(item, Constants.VacationBaseUrl);
+		var response = await DisplayMessage(flag, message);
+		if (response)
+		{
+			SelectedEmployee = new();
+			Vacation = new();
+			vacationDialog!.CloseDialog();
+		}
 	}
 
 	void HandleDetailsPageCloseBtnClicked()
@@ -289,6 +359,16 @@ HandleAddVacationClicked="AddVacationClicked" />
 			await dialogService.AlertAsync(message, "Alert!");
 			return false;
 		}
+	}
+
+	// Excel export / PDF Export
+	public async Task ToolbarClickHandler(ClickEventArgs args)
+	{
+		if (args.Item.Text == "Excel Export")
+			await this.DefaultGrid!.ExcelExport()!;
+
+		if (args.Item.Text == "PDF Export")
+			await this.DefaultGrid!.PdfExport()!;
 	}
 
 	public void Dispose() => allState.Action -= StateHasChanged;

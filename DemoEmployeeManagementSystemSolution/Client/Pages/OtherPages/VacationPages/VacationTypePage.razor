@@ -1,0 +1,151 @@
+﻿@implements IDisposable
+
+@if (allState.ShowVacationType)
+{
+    <div class="continer mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="float-start">Vacation Types</h4>
+                        <button class="btn btn-outline-success float-end" @onclick="OpenDialog">
+                            <i class="bi bi-plus-circle-dotted"></i> Add Type
+                        </button>
+                    </div>
+                    <div class="card-header" style="max-height:580px; overflow-x:hidden; overflow-y:scroll;">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Type</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Types is not null)
+                                    {
+                                        int count = 1;
+                                        foreach (var item in Types)
+                                        {
+                                            <tr>
+                                                <th scope="row">@count</th>
+                                                <td>@item.Id</td>
+                                                <td>@item.Name</td>
+                                                <td>
+                                                    <i class="bi bi-pencil text-info" id="cursorStyle"
+                                                    @onclick="()=>EditClicked(item)"></i>
+                                                    <i class="bi bi-trash text-danger" id="cursorStyle"
+                                                    @onclick="() => DeleteClicked(item)"></i>
+                                                </td>
+                                            </tr>
+                                            count++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4"><div class="alert alert-info text-center">No Type added</div></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<VacationTypeDialog @ref="vacationTypeDialog"
+HandleSaveOperationEvent="HandleSaveOperationEvent"
+VacationType="VacationType" />
+
+<style>
+    .cursorStyle {
+    cursor: pointer;
+    }
+</style>
+
+@code {
+
+    VacationTypeDialog? vacationTypeDialog;
+    VacationType VacationType = new();
+    public string Title { get; set; } = "Add";
+    public List<VacationType> Types { get; set; } = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetTypes();
+        allState.Action += StateHasChanged;
+    }
+
+    private async Task GetTypes() => Types = await vacationTypeService.GetAll(Constants.VacationTypeBaseUrl);
+
+    void OpenDialog() => vacationTypeDialog?.OpenDialog();
+
+    //Add or Update
+    private async Task HandleSaveOperationEvent(VacationType item)
+    {
+        bool successCheck = false;
+        if (item.Id > 0)
+        {
+            var result = await vacationTypeService
+        .Update(item, Constants.VacationTypeBaseUrl);
+            successCheck = await DisplayMessage(result.Flag, result.Massage);
+        }
+        else
+        {
+            var response = await vacationTypeService
+                .Insert(item, Constants.VacationTypeBaseUrl);
+            successCheck = await DisplayMessage(response.Flag, response.Massage);
+        }
+        if (successCheck)
+        {
+            VacationType = new();
+            await GetTypes();
+            vacationTypeDialog?.ChangeTitle("Add");
+        }
+    }
+
+    //Edit
+    private void EditClicked(VacationType item)
+    {
+        vacationTypeDialog?.ChangeTitle("Update");
+        VacationType = item;
+        OpenDialog();
+    }
+
+    // Delete
+    private async Task DeleteClicked(VacationType item)
+    {
+        bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {item.Name}?", "Confirm Delete");
+        if (!confirm) return;
+
+        var response = await vacationTypeService.DeleteById(item.Id, Constants.VacationTypeBaseUrl);
+        if (await DisplayMessage(response.Flag, response.Massage))
+            await GetTypes();
+    }
+
+    private async Task<bool> DisplayMessage(bool flag, string message)
+    {
+        if (flag)
+        {
+            await dialogService.AlertAsync(message, "Success Operation");
+            return true;
+        }
+        else
+        {
+            await dialogService.AlertAsync(message, "Alert!");
+            return false;
+        }
+    }
+
+    public void Dispose()
+    {
+        allState.Action -= StateHasChanged;
+    }
+
+}

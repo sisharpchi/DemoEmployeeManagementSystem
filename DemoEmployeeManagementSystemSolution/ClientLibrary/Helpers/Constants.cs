@@ -11,7 +11,9 @@ public class Constants
     public const string EmployeeBaseUrl = "api/employee";
 
     public const string DoctorBaseUrl = "api/doctor";
-    public const string OvertimeBaseUrl = "api/overtimetype";
+
+    public const string OvertimeBaseUrl = "api/overtime";
+    public const string OvertimeTypeBaseUrl = "api/overtimetype";
 
     public const string SanctionTypeBaseUrl = "api/sanctiontype";
     public const string SanctionBaseUrl = "api/sanction";

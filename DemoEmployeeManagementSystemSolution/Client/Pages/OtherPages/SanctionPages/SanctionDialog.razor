@@ -1,0 +1,88 @@
+﻿<SfDialog Width="280px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+    <DialogEvents OnOpen="OpenDialog"></DialogEvents>
+    <DialogTemplates>
+        <Header>@Title Employee's Sanction</Header>
+        <Content>
+            <EditForm Model="ItemModel" Enhance OnSubmit="Save">
+                <div class="card border-success">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Employee ID</label>
+                            <input @bind="ItemModel.EmployeeId" class="form-control" disabled />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">Occurring Date</label>
+                            <InputDate @bind-Value="ItemModel.Date" class="form-control" />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">Punishment Date</label>
+                            <InputDate @bind-Value="ItemModel.PunishmentDate" class="form-control" />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">Punishment</label>
+                            <InputTextArea @bind-Value="ItemModel.Punishment" class="form-control" />
+                        </div>
+                        <div class="form-group mt-3 mb-3">
+                            <label class="form-label">Select Type</label>
+
+                            @if (ItemModel.SancitonType != null)
+                            {
+                                string selected = ItemModel.SancitonType!.Name!;
+                                <SfDropDownList TValue="string" TItem="SancitonType" Placeholder="@selected" DataSource="SanctionTypes">
+                                    <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                    <DropDownListEvents TValue="string" TItem="SancitonType" ValueChange="OnValueChange"></DropDownListEvents>
+                                </SfDropDownList>
+                            }
+                            else
+                            {
+                                <SfDropDownList TValue="string" TItem="SancitonType" Placeholder="Select Type" DataSource="SanctionTypes">
+                                    <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                    <DropDownListEvents TValue="string" TItem="SancitonType" ValueChange="OnValueChange"></DropDownListEvents>
+                                </SfDropDownList>
+                            }    
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </Content>
+    </DialogTemplates>
+
+    <DialogButtons>
+        <DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save" />
+    </DialogButtons>
+</SfDialog>
+
+@code {
+    [Parameter] public Sanciton ItemModel { get; set; } = new();
+    [Parameter] public List<SancitonType> SanctionTypes { get; set; } = new();
+    [Parameter] public EventCallback<Sanciton> HandleSaveOperationEvent { get; set; }
+    public string Title { get; set; } = "Add";
+    private bool IsVisible { get; set; } = false;
+    private async void Save()
+    {
+        if (ItemModel.SanctionTypeId <= 0)
+        {
+            await dialogService.AlertAsync("You need to provide type.", "Alert!");
+        }
+        else
+        {
+            await HandleSaveOperationEvent.InvokeAsync(ItemModel);
+        }
+    }
+
+    public void OpenDialog()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void CloseDialog()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    public void OnValueChange(ChangeEventArgs<string, SancitonType> args) => ItemModel.SanctionTypeId = int.Parse(args.Value.ToString());
+
+    public void ChangeTitle(string title) => Title = title;
+}

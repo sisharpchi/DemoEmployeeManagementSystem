@@ -1,55 +1,214 @@
 ﻿@page "/identity/account/register"
 @layout AuthenticationLayout
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-5">
-            <EditForm Model="User" OnValidSubmit="HandleRegistration">
-                <DataAnnotationsValidator />
-                <div class="card shadow-sm rounded-4">
-                    <div class="card-header text-center fs-4 fw-semibold">
-                        Register an Account
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center p-3">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
+        <EditForm Model="User" OnValidSubmit="HandleRegistration">
+            <DataAnnotationsValidator />
+
+            <div class="card register-container shadow-lg">
+                <div class="card-header register-header text-center py-3">
+                    <h3 class="mb-0">Register an Account</h3>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <InputText @bind-Value="User.FullName"
+                                   class="form-control"
+                                   placeholder="Enter your full name" />
+                        <ValidationMessage For="@(() => User.FullName)" class="text-danger" />
                     </div>
-                    <div class="card-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <InputText @bind-Value="User.FullName" class="form-control" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <InputText @bind-Value="User.Email" class="form-control" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <InputText @bind-Value="User.Password" type="password" class="form-control" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Confirm Password</label>
-                            <InputText @bind-Value="User.ConfirmPassword" type="password" class="form-control" />
-                        </div>
-                        <div class="d-grid">
-                            @if (ShowLoadingButton)
-                            {
-                                <ButtonLoadingSpinner></ButtonLoadingSpinner>
-                            }
-                            else
-                            {
-                                <button class="btn btn-primary" type="submit">Register</button>
-                            }
-                        </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText @bind-Value="User.Email"
+                                   class="form-control"
+                                   placeholder="Enter your email" />
+                        <ValidationMessage For="@(() => User.Email)" class="text-danger" />
                     </div>
-                    <div class="card-footer text-center">
-                        <div>
-                            <small>Already have an account?</small><br />
-                            <a class="btn btn-link" href="/identity/account/login">Sign In</a>
-                        </div>
-                        <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <InputText @bind-Value="User.Password"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Enter your password" />
+                        <ValidationMessage For="@(() => User.Password)" class="text-danger" />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Confirm Password</label>
+                        <InputText @bind-Value="User.ConfirmPassword"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Confirm your password" />
+                        <ValidationMessage For="@(() => User.ConfirmPassword)" class="text-danger" />
+                    </div>
+
+                    <div class="d-grid">
+                        @if (ShowLoadingButton)
+                        {
+                            <button type="button" class="btn loading-btn" disabled>
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                Registering...
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary">
+                                Register
+                            </button>
+                        }
                     </div>
                 </div>
-            </EditForm>
-        </div>
+
+                <div class="card-footer py-3">
+                    <small>Already have an account?</small><br />
+                    <a href="/identity/account/login" class="btn-link">Sign In</a>
+                    <ValidationSummary class="validation-summary" />
+                </div>
+            </div>
+        </EditForm>
     </div>
 </div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .register-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .register-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        font-weight: 300;
+        letter-spacing: 1px;
+        color: #333;
+    }
+
+    .form-control {
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: rgba(255, 255, 255, 1);
+    }
+
+    .form-label {
+        color: #555;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .loading-btn {
+        background: #ccc;
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        color: white;
+        width: 100%;
+    }
+
+    .spinner-border-sm {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .card-footer {
+        background: transparent;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .card-footer p, .card-footer small {
+        color: #666;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .btn-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 5px 15px;
+    }
+
+    .btn-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    .validation-summary {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 15px;
+        color: #dc3545;
+        font-size: 14px;
+    }
+
+    .text-danger {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    @@media (max-width: 576px) {
+        .register-container{
+            margin: 15px;
+        }
+
+        .card-header {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
 
 @code {
     public bool ShowLoadingButton { get; set; } = false;

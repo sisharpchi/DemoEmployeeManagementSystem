@@ -2,20 +2,29 @@
 @layout MainLayout
 
 <TableBanner /> 
-<GeneralDepartmentPage />
-<DepartmentPage />
-<BranchPage />
-<CountryPage />
-<CityPage />
-<TownPage />
-<UserPage />
-<EmployeePage />
+@if (allState.ShowGeneralDepartment) { <GeneralDepartmentPage /> }
+@if (allState.ShowDepartment) { <DepartmentPage /> }
+@if (allState.ShowBranch) { <BranchPage /> }
+@if (allState.ShowCountry) { <CountryPage /> }
+@if (allState.ShowCity) { <CityPage /> }
+@if (allState.ShowTown) { <TownPage /> }
+@if (allState.ShowUser) { <UserPage /> }
+@if (allState.ShowHealth) { <DoctorPage /> }
+@if (allState.ShowOvertime) { <OvertimePage /> }
+@if (allState.ShowSanction) { <SanctionPage /> }
+@if (allState.ShowVacation) { <VacationPage /> }
+@if (allState.ShowOvertimeType) { <OvertimeTypePage /> }
+@if (allState.ShowSanctionType) { <SanctionTypePage /> }
+@if (allState.ShowVacationType) { <VacationTypePage /> }
+@if (allState.ShowEmployee) { <EmployeePage /> }
+
 
 @code {
 	[CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
 	protected async override Task OnInitializedAsync()
 	{
 		await CheckUserAuthentication();
+		allState.Action += StateHasChanged;
 	}
 	
 	private async Task CheckUserAuthentication()

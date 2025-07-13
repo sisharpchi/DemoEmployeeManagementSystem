@@ -1,0 +1,139 @@
+﻿@if (allState.ShowOvertimeType)
+{
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="float-start">Overtime Type</h4>
+						<button class="btn btn-outline-success float-end" @onclick="OpenDialog">
+							<i class="bi bi-plus-circle-dotted"></i> Add Type
+						</button>
+					</div>
+					<div class="card-header" style="max-height580px; overflow-x:hidden; overflow-y:scroll;">
+						<div class="card-body">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Id</th>
+										<th scope="col">Type</th>
+										<th scope="col">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (Types is not null)
+									{
+										int count = 1;
+										foreach (var item in Types)
+										{
+											<tr>
+												<th scope="row">@count</th>
+												<td>@item.Id</td>
+												<td>@item.Name</td>
+												<td>
+													<i class="bi bi-pencil text-info" id="cursorStyle" @onclick="()=>EditClicked(item)"></i>
+													<i class="bi bi-trash text-danger" id="cursorStyle" @onclick="()=>DeleteClicked(item)"></i>
+												</td>
+											</tr>
+											count++;
+										}
+									}
+									else
+									{
+										<tr>
+											<td colspan="4"><div class="alert alert-info text-center">No Type added yet!</div></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<style>
+	#cursorStyle {
+		cursor: pointer;
+	}
+</style>
+
+<OvertimeTypeDialog @ref="overtimeTypeDialog"
+HandleSaveOperationEvent="HandleSaveOperationEvent"
+OvertimeType="OvertimeType" />
+
+@code {
+	OvertimeTypeDialog? overtimeTypeDialog;
+	OvertimeType OvertimeType = new();
+	public string Title { get; set; } = "Add";
+	public List<OvertimeType> Types { get; set; } = new();
+
+	protected async override Task OnInitializedAsync()
+	{
+		await GetTypes();
+		allState.Action += StateHasChanged;
+	}
+
+	private async Task GetTypes() => Types = await overtimeTypeService.GetAll(Constants.OvertimeTypeBaseUrl);
+
+	void OpenDialog() => overtimeTypeDialog?.OpenDialog();
+
+	private async Task HandleSaveOperationEvent(OvertimeType item)
+	{
+		bool successCheck = false;
+		if (item.Id > 0)
+		{
+			var result = await overtimeTypeService.Update(item, Constants.OvertimeTypeBaseUrl);
+			successCheck = await DisplayMessage(result.Flag, result.Massage);
+		}
+		else
+		{
+			var response = await overtimeTypeService.Insert(item, Constants.OvertimeTypeBaseUrl);
+			successCheck = await DisplayMessage(response.Flag, response.Massage);
+		}
+		if (successCheck)
+		{
+			OvertimeType = new();
+			await GetTypes();
+			overtimeTypeDialog?.ChangeTitle("Add");
+		}
+	}
+
+	private void EditClicked(OvertimeType item)
+	{
+		overtimeTypeDialog?.ChangeTitle("Update");
+		OvertimeType = item;
+		OpenDialog();
+	}
+
+	private async Task DeleteClicked(OvertimeType item)
+	{
+		bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {item.Name}?", "Confirm Delete");
+		if (!confirm) return;
+		var response = await overtimeTypeService.DeleteById(item.Id, Constants.OvertimeTypeBaseUrl);
+		if (await DisplayMessage(response.Flag, response.Massage))
+			await GetTypes();
+	}
+
+	private async Task<bool> DisplayMessage(bool flag, string massage)
+	{
+		if (flag)
+		{
+			await dialogService.AlertAsync(massage, "Success Operation");
+			return true;
+		}
+		else
+		{
+			await dialogService.AlertAsync(massage, "Alert!");
+			return false;
+		}
+	}
+
+	public void Dispose()
+	{
+		allState.Action -= StateHasChanged;
+	}
+}

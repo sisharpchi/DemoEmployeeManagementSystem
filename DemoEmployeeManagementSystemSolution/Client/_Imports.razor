@@ -14,6 +14,7 @@
 @using BaseLibrary.DTOs
 @using ClientLibrary.Helpers
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
 @using ClientLibrary.Services.Contracts
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DropDowns
@@ -23,8 +24,11 @@
 @using Client.Pages.ContentPages.EmployeePages
 @using Client.Pages.ContentPages.LocationPages
 @using Client.Pages.ContentPages.DepartmentPages
-@using Client.Pages.OtherPages
 
+@using Client.Pages.OtherPages
+@using Client.Pages.OtherPages.OvertimePages;
+@using Client.Pages.OtherPages.SanctionPages;
+@using Client.Pages.OtherPages.VacationPages;
 @using Client.Pages.OtherPages.DoctorPages
 
 @inject AuthenticationStateProvider AuthStateProvider

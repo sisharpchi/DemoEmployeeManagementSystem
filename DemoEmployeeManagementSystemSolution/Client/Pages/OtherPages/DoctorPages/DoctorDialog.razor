@@ -12,17 +12,25 @@
 						</div>
 						<div class="form-group mt-2">
 							<label class="form-label">Date</label>
-							<input @bind="Doctor.Date" class="form-control" />
+							<InputDate @bind-Value="Doctor.Date" class="form-control" />
 						</div>
 						<div class="form-group mt-2">
 							<label class="form-label">Medical Diagnose</label>
 							<InputTextArea @bind-Value="Doctor.MedicalDiagnose" class="form-control"></InputTextArea>
+						</div>
+						<div class="form-group mt-2">
+							<label class="form-label">Recomendation</label>
+							<InputTextArea @bind-Value="Doctor.MedicalRecommendation" class="form-control"></InputTextArea>
 						</div>
 					</div>
 				</div>
 			</EditForm>
 		</Content>
 	</DialogTemplates>
+
+	<DialogButtons>
+		<DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save" />
+	</DialogButtons>
 </SfDialog>
 
 @code {
