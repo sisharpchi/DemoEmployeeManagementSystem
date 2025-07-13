@@ -2,6 +2,7 @@ using BaseLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using ServerLibrary.Data;
 using ServerLibrary.Helpers;
 using ServerLibrary.Repositories.Contracts;
@@ -80,9 +81,8 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 
-//app.MapOpenApi();
 
-//app.MapScalarApiReference();
+app.MapScalarApiReference();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -90,6 +90,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//app.MapOpenApi();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowBlazorWasm");
