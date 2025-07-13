@@ -78,6 +78,15 @@ builder.Services.AddCors(options =>
 
 });
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Employee Management System API",
+        Version = "v1"
+    });
+});
+
 var app = builder.Build();
 
 
