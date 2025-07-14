@@ -6,11 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	  <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
-
-	<Target Name="PublishBlazor" AfterTargets="Publish">
-		<Exec Command="dotnet publish ../Client/Client.csproj -c $(Configuration) -o $(PublishDir)/Client" />
-		<Copy SourceFiles="@(BlazorFiles)" DestinationFolder="$(PublishDir)\wwwroot\" />
-	</Target>
 	
 	<ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.18" />
