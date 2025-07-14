@@ -11,6 +11,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: "./publish"
   DOTNET_VERSION: "8.x"
   SOLUTION_PATH: "./DemoEmployeeManagementSystemSolution/DemoEmployeeManagementSystemSolution.sln"
+  CLIENT_PROJECT_PATH: "./DemoEmployeeManagementSystemSolution/Client"
   API_PROJECT_PATH: "./DemoEmployeeManagementSystemSolution/Server"
   PUBLISH_DIR: "./publish"
 
@@ -37,10 +38,18 @@ jobs:
       - name: Run tests
         run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build --verbosity normal
 
+      - name: Publish Blazor WebAssembly Client
+        run: dotnet publish ${{ env.CLIENT_PROJECT_PATH }} -c Release -o client_build
+
+      - name: Copy frontend to Server/wwwroot
+        run: |
+          mkdir -p ${{ env.API_PROJECT_PATH }}/wwwroot
+          cp -r client_build/wwwroot/* ${{ env.API_PROJECT_PATH }}/wwwroot/
+
       - name: Create publish directory
         run: mkdir -p ${{ env.PUBLISH_DIR }}
 
-      - name: Publish API project
+      - name: Publish API project (with embedded Blazor)
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --output ${{ env.PUBLISH_DIR }}
 
       - name: Check published files
