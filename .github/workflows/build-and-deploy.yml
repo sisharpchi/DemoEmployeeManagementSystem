@@ -11,7 +11,6 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: "./publish"
   DOTNET_VERSION: "8.x"
   SOLUTION_PATH: "./DemoEmployeeManagementSystemSolution/DemoEmployeeManagementSystemSolution.sln"
-  CLIENT_PROJECT_PATH: "./DemoEmployeeManagementSystemSolution/Client"
   API_PROJECT_PATH: "./DemoEmployeeManagementSystemSolution/Server"
   PUBLISH_DIR: "./publish"
 
@@ -38,10 +37,7 @@ jobs:
       - name: Run tests
         run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build --verbosity normal
 
-      - name: Publish Blazor WebAssembly Client
-        run: dotnet publish ${{ env.CLIENT_PROJECT_PATH }} -c Release -o client_build
-
-      - name: Publish API project (includes embedded Blazor)
+      - name: Publish API project
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --output ${{ env.PUBLISH_DIR }}
 
       - name: Check published files
