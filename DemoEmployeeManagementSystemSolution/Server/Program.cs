@@ -284,7 +284,7 @@ builder.Services.AddCors(options =>
 // Blazor static fayllar uchun
 builder.Services.AddSpaStaticFiles(configuration =>
 {
-    configuration.RootPath = "wwwroot";
+    configuration.RootPath = "wwwroot"; // <-- aynan Server loyihasidagi wwwroot
 });
 
 var app = builder.Build();
@@ -299,7 +299,7 @@ if (app.Environment.IsDevelopment() || true)
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSpaStaticFiles();
-
+    
 app.UseRouting(); // 🔥 MUHIM QO‘SHILISHI KERAK
 
 app.UseCors("AllowBlazorWasm");

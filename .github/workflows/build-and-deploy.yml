@@ -43,6 +43,7 @@ jobs:
 
       - name: Copy frontend to Server/wwwroot
         run: |
+          rm -rf ${{ env.API_PROJECT_PATH }}/wwwroot
           mkdir -p ${{ env.API_PROJECT_PATH }}/wwwroot
           cp -r client_build/* ${{ env.API_PROJECT_PATH }}/wwwroot/
 
