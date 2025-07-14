@@ -41,12 +41,6 @@ jobs:
       - name: Publish Blazor WebAssembly Client
         run: dotnet publish ${{ env.CLIENT_PROJECT_PATH }} -c Release -o client_build
 
-      - name: Copy frontend output into Server/wwwroot
-        run: |
-          rm -rf ${{ env.API_PROJECT_PATH }}/wwwroot
-          mkdir -p ${{ env.API_PROJECT_PATH }}/wwwroot
-          cp -r client_build/* ${{ env.API_PROJECT_PATH }}/wwwroot/
-
       - name: Publish API project (includes embedded Blazor)
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --output ${{ env.PUBLISH_DIR }}
 
