@@ -38,14 +38,14 @@ jobs:
       - name: Run tests
         run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build --verbosity normal
 
-      - name: Publish Blazor WebAssembly Client
-        run: dotnet publish ${{ env.CLIENT_PROJECT_PATH }} -c Release -o client_build
+      # - name: Publish Blazor WebAssembly Client
+      #   run: dotnet publish ${{ env.CLIENT_PROJECT_PATH }} -c Release -o client_build
 
-      - name: Copy frontend to Server/wwwroot
-        run: |
-          rm -rf ${{ env.API_PROJECT_PATH }}/wwwroot
-          mkdir -p ${{ env.API_PROJECT_PATH }}/wwwroot
-          cp -r client_build/* ${{ env.API_PROJECT_PATH }}/wwwroot/
+      # - name: Copy frontend to Server/wwwroot
+      #   run: |
+      #     rm -rf ${{ env.API_PROJECT_PATH }}/wwwroot
+      #     mkdir -p ${{ env.API_PROJECT_PATH }}/wwwroot
+      #     cp -r client_build/* ${{ env.API_PROJECT_PATH }}/wwwroot/
 
       - name: Publish API project (with embedded Blazor)
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --output ${{ env.PUBLISH_DIR }}

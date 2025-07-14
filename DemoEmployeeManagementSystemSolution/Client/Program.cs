@@ -23,8 +23,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient<CustomHttpHandler>();
 builder.Services.AddHttpClient("SystemApiClient", client =>
 {
-    client.BaseAddress = new Uri("https://employeesystem.azurewebsites.net/");
-    //client.BaseAddress = new Uri("https://localhost:7134/");
+    //client.BaseAddress = new Uri("https://employeesystem.azurewebsites.net/");
+    client.BaseAddress = new Uri("https://localhost:7134/");
 }).AddHttpMessageHandler<CustomHttpHandler>();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7134/") });
