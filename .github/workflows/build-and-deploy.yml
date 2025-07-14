@@ -45,8 +45,6 @@ jobs:
         run: |
           mkdir -p ${{ env.API_PROJECT_PATH }}/wwwroot
           cp -r client_build/* ${{ env.API_PROJECT_PATH }}/wwwroot/
-            - name: Create publish directory
-              run: mkdir -p ${{ env.PUBLISH_DIR }}
 
       - name: Publish API project (with embedded Blazor)
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --output ${{ env.PUBLISH_DIR }}
